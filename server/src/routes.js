@@ -1,14 +1,14 @@
 import express from "express";
-import { authMiddleware } from "@/middleware/auth.middleware";
+import authRoutes from "@/module/auth/auth.routes";
 
 const router = express.Router();
 
+// health check
 router.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-router.get("/protected", authMiddleware, (req, res) => {
-  res.json({ message: "You are authenticated", user: req.user });
-});
+// auth routes
+router.use("/auth", authRoutes);
 
 export default router;
