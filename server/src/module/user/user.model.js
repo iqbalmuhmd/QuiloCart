@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { USER_ROLES } from "@/utils/constants";
 
 const userSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -17,9 +22,10 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["USER", "MERCHANT", "ADMIN"],
-      default: "USER",
+      enum: Object.values(USER_ROLES),
+      default: USER_ROLES.USER,
     },
+
     isActive: {
       type: Boolean,
       default: true,

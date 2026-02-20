@@ -3,8 +3,8 @@ import express from "express";
 import {
   authCredentialsValidator,
   changePasswordValidator,
-} from "./auth.validator";
-import { changePassword, login, register } from "./auth.controller";
+} from "@/module/auth/auth.validator";
+import { changePassword, login, register } from "@/module/auth/auth.controller";
 import { authMiddleware } from "@/middleware/auth.middleware";
 
 const router = express.Router();

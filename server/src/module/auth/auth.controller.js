@@ -9,9 +9,10 @@ export const register = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   const user = await registerUser({
+    name,
     email,
     password,
   });
