@@ -1,7 +1,7 @@
 import { validationResult } from "express-validator";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
-import { registerUser, loginUser } from "./auth.service";
+import { registerUser, loginUser, changeUserPassword } from "./auth.service";
 
 export const register = async (req, res) => {
   const errors = validationResult(req);
@@ -35,4 +35,19 @@ export const login = async (req, res) => {
   });
 
   res.status(200).json(new ApiResponse(200, "Login successful", result));
+};
+
+export const changePassword = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, errors.array()[0].msg);
+  }
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user.userId;
+
+  await changeUserPassword(userId, currentPassword, newPassword);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Password changed successfully"));
 };
