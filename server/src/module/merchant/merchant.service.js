@@ -1,5 +1,5 @@
 import User from "@/module/user/user.model";
-import Merchant from "@/module/merchant/merchant.model";
+import Merchant from "./merchant.model";
 import { ApiError } from "@/utils/ApiError";
 import { USER_ROLES } from "@/utils/constants";
 import { MERCHANT_STATUS } from "@/utils/constants";
@@ -15,6 +15,11 @@ export const registerMerchantService = async ({
 }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new ApiError(409, "Email already exists");
+
+  const existingMerchant = await Merchant.findOne({ userId: user._id });
+  if (existingMerchant) {
+    throw new ApiError(409, "Merchant profile already exists");
+  }
 
   const user = await User.create({
     name,

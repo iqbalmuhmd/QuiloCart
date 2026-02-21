@@ -2,7 +2,7 @@ import { validationResult } from "express-validator";
 import {
   loginMerchantService,
   registerMerchantService,
-} from "@/module/merchant/mercant.service";
+} from "./merchant.service";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
 

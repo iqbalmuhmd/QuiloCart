@@ -1,17 +1,18 @@
 import express from "express";
 
 import {
-  authCredentialsValidator,
   changePasswordValidator,
-} from "@/module/auth/auth.validator";
-import { changePassword, login, register } from "@/module/auth/auth.controller";
+  loginValidator,
+  registerUserValidator,
+} from "./auth.validator";
+import { changePassword, login, register } from "./auth.controller";
 import { authMiddleware } from "@/middleware/auth.middleware";
 
 const router = express.Router();
 
-router.post("/register", ...authCredentialsValidator, register);
+router.post("/register", ...registerUserValidator, register);
 
-router.post("/login", ...authCredentialsValidator, login);
+router.post("/login", ...loginValidator, login);
 
 router.patch(
   "/change-password",
