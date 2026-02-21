@@ -16,11 +16,6 @@ export const registerMerchantService = async ({
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new ApiError(409, "Email already exists");
 
-  const existingMerchant = await Merchant.findOne({ userId: user._id });
-  if (existingMerchant) {
-    throw new ApiError(409, "Merchant profile already exists");
-  }
-
   const user = await User.create({
     name,
     email,
@@ -68,10 +63,6 @@ export const loginMerchantService = async ({ email, password }) => {
   const merchant = await Merchant.findOne({ userId: user._id });
   if (!merchant) {
     throw new ApiError(403, "Merchant profile not found");
-  }
-
-  if (merchant.status !== MERCHANT_STATUS.APPROVED) {
-    throw new ApiError(403, "Merchant account is pending admin approval");
   }
 
   const token = signToken({
