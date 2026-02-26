@@ -1,10 +1,10 @@
-import React from 'react'
+import { useSelector } from "react-redux";
 
 const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+  const auth = useSelector((state) => state.auth);
+  console.log("auth state:", auth);
+  return <div>App</div>;
+};
 
-export default App
+export default App;
 
