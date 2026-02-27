@@ -8,7 +8,7 @@ const AUTH_ROUTES = {
 
 const login = async (credentials) => {
   const response = await apiClient.post(AUTH_ROUTES.LOGIN, credentials);
-  return response.data;
+  return response.data.data;
 };
 
 const register = async (data) => {
