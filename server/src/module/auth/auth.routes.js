@@ -5,7 +5,7 @@ import {
   loginValidator,
   registerUserValidator,
 } from "./auth.validator";
-import { changePassword, login, register } from "./auth.controller";
+import { changePassword, getMe, login, register } from "./auth.controller";
 import { authMiddleware } from "@/middleware/auth.middleware";
 
 const router = express.Router();
@@ -13,6 +13,8 @@ const router = express.Router();
 router.post("/register", ...registerUserValidator, register);
 
 router.post("/login", ...loginValidator, login);
+
+router.get("/me", authMiddleware, getMe);
 
 router.patch(
   "/change-password",

@@ -1,17 +1,20 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { getMeThunk } from "./features/auth/authSlice";
-import TestAuth from "./testAuth";
+import { useDispatch, useSelector } from "react-redux";
+
+import { getMeThunk } from "@/features/auth/authSlice";
+import AppRouter from "@/app/router";
 
 const App = () => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) dispatch(getMeThunk());
-  }, [dispatch]);
+    if (token) {
+      dispatch(getMeThunk());
+    }
+  }, [token, dispatch]);
 
-  return <TestAuth />; // temporary
+  return <AppRouter />;
 };
 
 export default App;

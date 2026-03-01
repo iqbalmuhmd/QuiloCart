@@ -38,6 +38,16 @@ export const login = async (req, res) => {
   res.status(200).json(new ApiResponse(200, "Login successful", result));
 };
 
+export const getMe = async (req, res) => {
+  res.status(200).json(
+    new ApiResponse(200, "Authenticated user", {
+      id: req.user.userId,
+      email: req.user.email,
+      role: req.user.role,
+    }),
+  );
+};
+
 export const changePassword = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
