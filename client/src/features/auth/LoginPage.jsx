@@ -11,7 +11,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, isAuthenticated } = useSelector(
+  const { loading, error } = useSelector(
     (state) => state.auth,
   );
 
@@ -22,13 +22,6 @@ const LoginPage = () => {
     e.preventDefault();
     dispatch(loginThunk({ email, password }));
   };
-
-  // redirect after successful login
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

@@ -4,6 +4,7 @@ const AUTH_ROUTES = {
   LOGIN: "/auth/login",
   REGISTER: "/auth/register",
   ME: "/auth/me",
+  MERCHANT_LOGIN: "/merchant/register"
 };
 
 const login = async (credentials) => {
@@ -21,10 +22,16 @@ const getMe = async () => {
   return response.data;
 };
 
+const merchantRegister = async (data) => {
+  const response = await apiClient.post(AUTH_ROUTES.MERCHANT_LOGIN, data);
+  return response.data;
+};
+
 const authApi = {
   login,
   register,
   getMe,
+  merchantRegister,
 };
 
 export default authApi;

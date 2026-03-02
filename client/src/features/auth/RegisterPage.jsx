@@ -88,6 +88,17 @@ const RegisterPage = () => {
               {loading ? "Creating account..." : "Register"}
             </Button>
 
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              Want to sell products?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/merchant/register")}
+                className="text-primary underline"
+              >
+                Register as Merchant
+              </button>
+            </p>
+            
             <p className="text-sm text-muted-foreground text-center">
               Already have an account?{" "}
               <button
