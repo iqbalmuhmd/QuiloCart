@@ -1,19 +1,22 @@
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { USER_ROLES, MERCHANT_STATUS } from "@/constants";
+import useAuth from "@/hooks/useAuth";
 
 const GuestRoute = ({ children }) => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, isMerchant, isPendingMerchant, isApprovedMerchant } =
+    useAuth();
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated) {
     return children;
   }
 
-  if (user.role === USER_ROLES.MERCHANT) {
-    if (user.merchant?.status === MERCHANT_STATUS.PENDING) {
+  if (isMerchant) {
+    if (isPendingMerchant) {
       return <Navigate to="/merchant/pending" replace />;
     }
-    return <Navigate to="/merchant/dashboard" replace />;
+
+    if (isApprovedMerchant) {
+      return <Navigate to="/merchant/dashboard" replace />;
+    }
   }
 
   return <Navigate to="/" replace />;

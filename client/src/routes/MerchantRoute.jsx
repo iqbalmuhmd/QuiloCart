@@ -1,27 +1,31 @@
-import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
-import { USER_ROLES, MERCHANT_STATUS } from "@/constants";
+import useAuth from "@/hooks/useAuth";
 
 const MerchantRoute = ({ children }) => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const location = useLocation();
+  const { isAuthenticated, isMerchant, isPendingMerchant, isApprovedMerchant } =
+    useAuth();
 
-  if (!isAuthenticated || !user) {
+  const location = useLocation();
+  const isPendingPage = location.pathname === "/merchant/pending";
+
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role !== USER_ROLES.MERCHANT) {
+  if (!isMerchant) {
     return <Navigate to="/" replace />;
   }
 
-  const isPendingPage = location.pathname === "/merchant/pending";
-
-  if (user.merchant?.status === MERCHANT_STATUS.PENDING && !isPendingPage) {
+  if (isPendingMerchant && !isPendingPage) {
     return <Navigate to="/merchant/pending" replace />;
   }
 
-  if (user.merchant?.status === MERCHANT_STATUS.APPROVED && isPendingPage) {
+  if (isApprovedMerchant && isPendingPage) {
     return <Navigate to="/merchant/dashboard" replace />;
+  }
+
+  if (!isApprovedMerchant && !isPendingMerchant) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
