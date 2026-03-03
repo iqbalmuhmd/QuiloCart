@@ -1,8 +1,5 @@
 import { validationResult } from "express-validator";
-import {
-  loginMerchantService,
-  registerMerchantService,
-} from "./merchant.service";
+import { registerMerchantService } from "./merchant.service";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
 
@@ -31,14 +28,4 @@ export const registerMerchant = async (req, res) => {
         result,
       ),
     );
-};
-
-export const loginMerchant = async (req, res) => {
-  const { email, password } = req.body;
-
-  const result = await loginMerchantService({ email, password });
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, "Merchant login successful", result));
 };

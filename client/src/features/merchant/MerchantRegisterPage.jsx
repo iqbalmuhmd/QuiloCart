@@ -1,31 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-import authApi from "@/features/auth/authApi";
-import { USER_ROLES, MERCHANT_STATUS } from "@/constants";
+import merchantApi from "./merchantApi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const MerchantRegisterPage = () => {
   const navigate = useNavigate();
-
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (!isAuthenticated || !user) return;
-
-    if (user.role === USER_ROLES.MERCHANT) {
-      if (user.merchant?.status === MERCHANT_STATUS.PENDING) {
-        navigate("/merchant/pending");
-      } else {
-        navigate("/merchant/dashboard");
-      }
-    } else {
-      navigate("/");
-    }
-  }, [isAuthenticated, user, navigate]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,7 +25,7 @@ const MerchantRegisterPage = () => {
       setLoading(true);
       setError(null);
 
-      await authApi.merchantRegister({
+      await merchantApi.merchantRegister({
         name,
         email,
         password,
@@ -51,22 +33,10 @@ const MerchantRegisterPage = () => {
         storeDescription,
       });
 
-        navigate("/login"); }
-    //  catch (err) {
-    //   setError(err.response?.data?.message || "Merchant registration failed");
-    // }
-    catch (err) {
-  console.log("FULL ERROR:", err);
-  console.log("RESPONSE:", err.response);
-  console.log("DATA:", err.response?.data);
-
-  setError(
-    err.response?.data?.message ||
-    err.response?.data?.error ||
-    "Merchant registration failed"
-  );
-}
-     finally {
+      navigate("/login");
+    } catch (err) {
+      setError(err.response?.data?.message || "Merchant registration failed");
+    } finally {
       setLoading(false);
     }
   };

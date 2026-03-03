@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import routes from "@/routes.js";
 
 import { errorHandler } from "./middleware/error.middleware.js";
+import { ApiError } from "@/utils/ApiError";
 
 dotenv.config();
 
