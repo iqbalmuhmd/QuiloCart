@@ -27,6 +27,7 @@ const initialState = {
   token: localStorage.getItem("token"),
   user: null,
   isAuthenticated: false,
+  authLoading: !!localStorage.getItem("token"),
   loading: false,
   error: null,
 };
@@ -59,14 +60,19 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(getMeThunk.pending, (state) => {
+        state.authLoading = true;
+      })
       .addCase(getMeThunk.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.authLoading = false;
       })
       .addCase(getMeThunk.rejected, (state) => {
         state.token = null;
         state.user = null;
         state.isAuthenticated = false;
+        state.authLoading = false;
         localStorage.removeItem("token");
       });
   },

@@ -47,6 +47,12 @@ export const loginUser = async ({ email, password }) => {
   };
 };
 
+export const getUserById = async (id) => {
+  const user = await User.findById(id);
+  if (!user) throw new ApiError(404, "User not found");
+  return user;
+};
+
 export const changeUserPassword = async (
   userId,
   currentPassword,

@@ -1,8 +1,14 @@
 import { validationResult } from "express-validator";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
-import { registerUser, loginUser, changeUserPassword } from "./auth.service";
+import {
+  registerUser,
+  loginUser,
+  changeUserPassword,
+  getUserById,
+} from "./auth.service";
 import { formatUserResponse } from "./auth.helper";
+
 export const register = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -39,9 +45,7 @@ export const login = async (req, res) => {
 };
 
 export const getMe = async (req, res) => {
-  const user = await User.findById(req.user.userId);
-  if (!user) throw new ApiError(404, "User not found");
-
+  const user = await getUserById(req.user.userId);
   res.json(
     new ApiResponse(200, "Authenticated user", await formatUserResponse(user)),
   );

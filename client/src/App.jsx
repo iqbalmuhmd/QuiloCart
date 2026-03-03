@@ -6,13 +6,21 @@ import AppRouter from "@/app/router";
 
 const App = () => {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+  const { token, user, authLoading } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (token) {
+    if (token && !user) {
       dispatch(getMeThunk());
     }
-  }, [token, dispatch]);
+  }, [token, user, dispatch]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Loading...
+      </div>
+    );
+  }
 
   return <AppRouter />;
 };
