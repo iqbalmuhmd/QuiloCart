@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApi from "./authApi";
+import adminApi from "../admin/adminApi";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
@@ -8,6 +9,19 @@ export const loginThunk = createAsyncThunk(
       return await authApi.login(credentials);
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Login failed");
+    }
+  },
+);
+
+export const adminLoginThunk = createAsyncThunk(
+  "auth/adminLogin",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      return await adminApi.adminLogin(credentials);
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Admin login failed",
+      );
     }
   },
 );
@@ -57,6 +71,22 @@ const authSlice = createSlice({
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(adminLoginThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(adminLoginThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+        localStorage.setItem("token", action.payload.token);
+      })
+      .addCase(adminLoginThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

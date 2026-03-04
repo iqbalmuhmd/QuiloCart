@@ -5,6 +5,9 @@ import RegisterPage from "@/features/auth/RegisterPage";
 import MerchantRegisterPage from "@/features/merchant/MerchantRegisterPage";
 import MerchantPendingPage from "@/features/merchant/MerchantPendingPage";
 import MerchantDashboardPage from "@/features/merchant/MerchantDashboardPage";
+import AdminLoginPage from "@/features/admin/AdminLoginPage";
+import AdminDashboardPage from "@/features/admin/AdminDashboardPage";
+import AdminRoute from "@/routes/AdminRoute";
 import HomePage from "@/HomePage";
 
 import GuestRoute from "@/routes/GuestRoute";
@@ -56,6 +59,17 @@ const AppRouter = () => {
             <MerchantRoute>
               <MerchantDashboardPage />
             </MerchantRoute>
+          }
+        />
+
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboardPage />
+            </AdminRoute>
           }
         />
 

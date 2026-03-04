@@ -3,8 +3,6 @@ import Merchant from "./merchant.model";
 import { ApiError } from "@/utils/ApiError";
 import { USER_ROLES } from "@/utils/constants";
 import { MERCHANT_STATUS } from "@/utils/constants";
-import bcrypt from "bcryptjs";
-import { signToken } from "@/utils/jwt";
 
 export const registerMerchantService = async ({
   name,
@@ -20,7 +18,7 @@ export const registerMerchantService = async ({
     name,
     email,
     password,
-    role: "MERCHANT",
+    role: USER_ROLES.MERCHANT,
   });
 
   const merchant = await Merchant.create({

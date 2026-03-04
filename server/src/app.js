@@ -6,6 +6,7 @@ import routes from "@/routes.js";
 
 import { errorHandler } from "./middleware/error.middleware.js";
 import { ApiError } from "@/utils/ApiError";
+import { config } from "./config/env.js";
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: config.clientUrl,
     credentials: true,
   }),
 );
