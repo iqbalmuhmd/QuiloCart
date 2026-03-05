@@ -1,7 +1,8 @@
 import express from "express";
 import authRoutes from "@/module/auth/auth.routes";
 import merchantRoutes from "@/module/merchant/merchant.routes";
-import adminRoutes from "@/module/admin/admin.routes"
+import adminRoutes from "@/module/admin/admin.routes";
+import categoryRoutes from "@/module/category/category.routes";
 
 const router = express.Router();
 
@@ -18,5 +19,8 @@ router.use("/merchant", merchantRoutes);
 
 // admin routes
 router.use("/admin", adminRoutes);
+
+// category routes
+router.use("/categories", categoryRoutes);
 
 export default router;
