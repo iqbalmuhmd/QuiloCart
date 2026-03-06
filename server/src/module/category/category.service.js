@@ -21,18 +21,29 @@ export const getCategoriesService = async () => {
 };
 
 export const updateCategoryService = async (id, { name, description }) => {
+  if (name === undefined && description === undefined) {
+    throw new ApiError(400, "No fields provided for update");
+  }
+
   const category = await Category.findById(id);
 
   if (!category) {
     throw new ApiError(404, "Category not found");
   }
 
-  if (!name && !description) {
-    throw new ApiError(400, "No fields provided for update");
+  if (name !== undefined) {
+    const existingCategory = await Category.findOne({ name });
+
+    if (existingCategory && existingCategory._id.toString() !== id) {
+      throw new ApiError(409, "Category name already exists");
+    }
+
+    category.name = name;
   }
 
-  if (name) category.name = name;
-  if (description) category.description = description;
+  if (description !== undefined) {
+    category.description = description;
+  }
 
   await category.save();
 
@@ -49,6 +60,4 @@ export const deleteCategoryService = async (id) => {
   category.isActive = false;
 
   await category.save();
-
-  return category;
 };
