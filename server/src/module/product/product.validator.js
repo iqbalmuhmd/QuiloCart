@@ -1,0 +1,77 @@
+import { body, param } from "express-validator";
+
+export const createProductValidator = [
+  body("name")
+    .notEmpty()
+    .withMessage("Product name is required")
+    .isString()
+    .withMessage("Product name must be a string")
+    .trim(),
+
+  body("price")
+    .notEmpty()
+    .withMessage("Price is required")
+    .isFloat({ min: 0 })
+    .withMessage("Price must be a number greater than or equal to 0"),
+
+  body("stock").isInt({ min: 0 }).withMessage("Stock cannot be negative"),
+
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be a string")
+    .trim(),
+
+  body("categoryId")
+    .notEmpty()
+    .withMessage("Category is required")
+    .isMongoId()
+    .withMessage("Invalid category ID"),
+
+  body("images")
+    .optional()
+    .isArray()
+    .withMessage("Product images format is invalid"),
+
+  body("images.*")
+    .optional()
+    .isString()
+    .withMessage("Each image must be a string URL"),
+];
+
+export const updateProductValidator = [
+  param("id").isMongoId().withMessage("Invalid product id"),
+
+  body("name")
+    .optional()
+    .isString()
+    .withMessage("Product name must be text")
+    .trim(),
+
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be text")
+    .trim(),
+
+  body("price")
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Price must be a positive number"),
+
+  body("stock")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("Stock cannot be negative"),
+
+  body("images")
+    .optional()
+    .isArray()
+    .withMessage("Images must be a list of image URLs"),
+
+  body("categoryId").optional().isMongoId().withMessage("Invalid category id"),
+];
+
+export const deleteProductValidator = [
+  param("id").isMongoId().withMessage("Invalid product id"),
+];
