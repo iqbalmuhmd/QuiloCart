@@ -2,6 +2,7 @@ import Category from "../category/category.model";
 import Product from "./product.model";
 import { ApiError } from "@/utils/ApiError";
 
+// Merchant Busin
 export const createProductService = async (data, merchantId) => {
   const { categoryId } = data;
 
@@ -78,4 +79,36 @@ export const deleteProductService = async (productId, merchantId) => {
   product.isActive = false;
 
   await product.save();
+};
+
+export const getProductsService = async ({ page, limit }) => {
+  const skip = (page - 1) * limit;
+
+  const query = {
+    isActive: true,
+  };
+
+  const products = await Product.find(query).skip(skip).limit(limit);
+
+  const total = await Product.countDocuments(query);
+
+  return {
+    products,
+    total,
+    page,
+    limit,
+  };
+};
+
+export const getProductByIdService = async (id) => {
+  const product = await Product.findOne({
+    _id: id,
+    isActive: true,
+  });
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  return product;
 };

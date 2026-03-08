@@ -3,28 +3,23 @@ import authRoutes from "@/module/auth/auth.routes";
 import merchantRoutes from "@/module/merchant/merchant.routes";
 import adminRoutes from "@/module/admin/admin.routes";
 import categoryRoutes from "@/module/category/category.routes";
-import productRoutes from "@/module/product/product.routes";
+import merchantProductRoutes from "@/module/product/merchantProduct.routes";
+import publicProductRoutes from "@/module/product/publicProduct.routes";
 
 const router = express.Router();
 
-// health check
-router.get("/health", (req, res) => {
-  res.json({ status: "OK" });
-});
-
-// auth routes
+// Auth
 router.use("/auth", authRoutes);
 
-// merchant routes
-router.use("/merchant", merchantRoutes);
-
-// admin routes
-router.use("/admin", adminRoutes);
-
-// category routes
+// @access  Public
+router.use("/products", publicProductRoutes);
 router.use("/categories", categoryRoutes);
 
-// product routes
-router.use("/products", productRoutes)
+// @access  Private (Merchant)
+router.use("/merchant/products", merchantProductRoutes);
+router.use("/merchant", merchantRoutes);
+
+// @access  Private (Admin)
+router.use("/admin", adminRoutes);
 
 export default router;

@@ -6,8 +6,11 @@ import {
   getMerchantProductsService,
   updateProductService,
   deleteProductService,
+  getProductsService,
+  getProductByIdService,
 } from "./product.service";
 
+// @access  Private (Merchant)
 export const createProduct = async (req, res) => {
   const errors = validationResult(req);
 
@@ -62,4 +65,28 @@ export const deleteProduct = async (req, res) => {
   await deleteProductService(req.params.id, req.user.userId);
 
   res.status(200).json(new ApiResponse(200, "Product deleted successfully"));
+};
+
+// @access  Public
+export const getProducts = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+
+  const result = await getProductsService({
+    page: Number(page),
+    limit: Number(limit),
+  });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Products fetched successfully", result));
+};
+
+export const getProductById = async (req, res) => {
+  const { id } = req.params;
+
+  const product = await getProductByIdService(id);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Product fetched successfully", product));
 };
