@@ -1,6 +1,7 @@
 import express from "express";
 import { authMiddleware } from "@/middleware/auth.middleware";
 import { roleMiddleware } from "@/middleware/role.middleware";
+import { approvedMerchantMiddleware } from "@/middleware/approvedMerchant.middleware";
 import { USER_ROLES } from "@/utils/constants";
 import {
   createProduct,
@@ -16,7 +17,7 @@ import {
 
 const router = express.Router();
 
-const merchantOnly = [authMiddleware, roleMiddleware(USER_ROLES.MERCHANT)];
+const merchantOnly = [authMiddleware, roleMiddleware(USER_ROLES.MERCHANT), approvedMerchantMiddleware];
 
 router
   .route("/")
