@@ -108,7 +108,7 @@ export const deleteProductService = async (productId, userId) => {
   await product.save();
 };
 
-export const getProductsService = async ({ page, limit, category }) => {
+export const getProductsService = async ({ page, limit, category, search }) => {
   const skip = (page - 1) * limit;
 
   const query = { isActive: true };
@@ -125,6 +125,14 @@ export const getProductsService = async ({ page, limit, category }) => {
     }
 
     query.categoryId = category;
+  }
+  
+  // SEARCH FILTER
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
   }
 
   const products = await Product.find(query)

@@ -74,13 +74,14 @@ export const getProducts = async (req, res) => {
   if (!errors.isEmpty()) {
     throw new ApiError(400, errors.array()[0].msg);
   }
-  
-  const { page = 1, limit = 10, category } = req.query;
+
+  const { page = 1, limit = 10, category, search } = req.query;
 
   const result = await getProductsService({
     page: Number(page),
     limit: Number(limit),
     category,
+    search,
   });
 
   res
