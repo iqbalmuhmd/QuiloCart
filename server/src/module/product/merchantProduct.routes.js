@@ -12,12 +12,16 @@ import {
 import {
   createProductValidator,
   updateProductValidator,
-  deleteProductValidator,
+  productIdValidator,
 } from "./product.validator";
 
 const router = express.Router();
 
-const merchantOnly = [authMiddleware, roleMiddleware(USER_ROLES.MERCHANT), approvedMerchantMiddleware];
+const merchantOnly = [
+  authMiddleware,
+  roleMiddleware(USER_ROLES.MERCHANT),
+  approvedMerchantMiddleware,
+];
 
 router
   .route("/")
@@ -27,6 +31,6 @@ router
 router
   .route("/:id")
   .patch(...merchantOnly, ...updateProductValidator, updateProduct)
-  .delete(...merchantOnly, ...deleteProductValidator, deleteProduct);
+  .delete(...merchantOnly, ...productIdValidator, deleteProduct);
 
 export default router;

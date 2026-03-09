@@ -1,9 +1,15 @@
-import Category from "../category/category.model";
+import Merchant from "@/module/merchant/merchant.model";
+import Category from "@/module/category/category.model";
 import Product from "./product.model";
 import { ApiError } from "@/utils/ApiError";
 
-// Merchant Busin
-export const createProductService = async (data, merchantId) => {
+export const createProductService = async (data, userId) => {
+  const merchant = await Merchant.findOne({ userId });
+
+  if (!merchant) {
+    throw new ApiError(403, "Merchant profile not found");
+  }
+
   const { categoryId } = data;
 
   const category = await Category.findOne({
@@ -17,15 +23,21 @@ export const createProductService = async (data, merchantId) => {
 
   const product = await Product.create({
     ...data,
-    merchantId,
+    merchantId: merchant._id,
   });
 
   return product;
 };
 
-export const getMerchantProductsService = async (merchantId) => {
+export const getMerchantProductsService = async (userId) => {
+  const merchant = await Merchant.findOne({ userId });
+
+  if (!merchant) {
+    throw new ApiError(403, "Merchant profile not found");
+  }
+
   const products = await Product.find({
-    merchantId,
+    merchantId: merchant._id,
     isActive: true,
   });
 
@@ -44,7 +56,16 @@ export const updateProductService = async (
     throw new ApiError(400, "No fields provided for update");
   }
 
-  const product = await Product.findOne({ _id: productId, merchantId });
+  const merchant = await Merchant.findOne({ userId: merchantId });
+
+  if (!merchant) {
+    throw new ApiError(403, "Merchant profile not found");
+  }
+
+  const product = await Product.findOne({
+    _id: productId,
+    merchantId: merchant._id,
+  });
   if (!product) throw new ApiError(404, "Product not found");
 
   if (name !== undefined) product.name = name;
@@ -66,10 +87,16 @@ export const updateProductService = async (
   return product;
 };
 
-export const deleteProductService = async (productId, merchantId) => {
+export const deleteProductService = async (productId, userId) => {
+  const merchant = await Merchant.findOne({ userId });
+
+  if (!merchant) {
+    throw new ApiError(403, "Merchant profile not found");
+  }
+
   const product = await Product.findOne({
     _id: productId,
-    merchantId,
+    merchantId: merchant._id,
   });
 
   if (!product) {
@@ -84,16 +111,33 @@ export const deleteProductService = async (productId, merchantId) => {
 export const getProductsService = async ({ page, limit }) => {
   const skip = (page - 1) * limit;
 
-  const query = {
-    isActive: true,
-  };
+  const query = { isActive: true };
 
-  const products = await Product.find(query).skip(skip).limit(limit);
+  const products = await Product.find(query)
+    .populate("categoryId", "name")
+    .populate("merchantId", "storeName")
+    .skip(skip)
+    .limit(limit);
 
   const total = await Product.countDocuments(query);
 
+  const formattedProducts = products.map((p) => ({
+    _id: p._id,
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    stock: p.stock,
+    images: p.images,
+    category: {
+      name: p.categoryId?.name,
+    },
+    merchant: {
+      storeName: p.merchantId?.storeName,
+    },
+  }));
+
   return {
-    products,
+    products: formattedProducts,
     total,
     page,
     limit,
@@ -104,11 +148,26 @@ export const getProductByIdService = async (id) => {
   const product = await Product.findOne({
     _id: id,
     isActive: true,
-  });
+  })
+    .populate("categoryId", "name")
+    .populate("merchantId", "storeName");
 
   if (!product) {
     throw new ApiError(404, "Product not found");
   }
 
-  return product;
+  return {
+    _id: product._id,
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    stock: product.stock,
+    images: product.images,
+    category: {
+      name: product.categoryId?.name,
+    },
+    merchant: {
+      storeName: product.merchantId?.storeName,
+    },
+  };
 };

@@ -72,6 +72,6 @@ export const updateProductValidator = [
   body("categoryId").optional().isMongoId().withMessage("Invalid category id"),
 ];
 
-export const deleteProductValidator = [
+export const productIdValidator = [
   param("id").isMongoId().withMessage("Invalid product id"),
 ];

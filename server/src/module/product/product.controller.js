@@ -82,6 +82,12 @@ export const getProducts = async (req, res) => {
 };
 
 export const getProductById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, errors.array()[0].msg);
+  }
+  
   const { id } = req.params;
 
   const product = await getProductByIdService(id);

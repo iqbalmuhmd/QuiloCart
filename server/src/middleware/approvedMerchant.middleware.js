@@ -6,11 +6,13 @@ export const approvedMerchantMiddleware = async (req, res, next) => {
   const merchant = await Merchant.findOne({ userId: req.user.userId });
 
   if (!merchant) {
-    throw new ApiError(403, "Merchant profile not found");
+    return next(new ApiError(403, "Merchant profile not found"));
   }
 
   if (merchant.status !== MERCHANT_STATUS.APPROVED) {
-    throw new ApiError(403, "Merchant account is pending admin approval");
+    return next(
+      new ApiError(403, "Merchant account is pending admin approval"),
+    );
   }
 
   next();
