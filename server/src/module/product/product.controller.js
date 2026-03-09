@@ -18,9 +18,7 @@ export const createProduct = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  const merchantId = req.user.userId;
-
-  const product = await createProductService(req.body, merchantId);
+  const product = await createProductService(req.body, req.merchant._id);
 
   res
     .status(201)
@@ -28,9 +26,8 @@ export const createProduct = async (req, res) => {
 };
 
 export const getMerchantProducts = async (req, res) => {
-  const merchantId = req.user.userId;
 
-  const products = await getMerchantProductsService(merchantId);
+  const products = await getMerchantProductsService(req.merchant._id);
 
   res
     .status(200)
@@ -47,7 +44,7 @@ export const updateProduct = async (req, res) => {
   const product = await updateProductService(
     req.params.id,
     req.body,
-    req.user.userId,
+    req.merchant._id,
   );
 
   res
@@ -62,7 +59,7 @@ export const deleteProduct = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  await deleteProductService(req.params.id, req.user.userId);
+  await deleteProductService(req.params.id, req.merchant._id);
 
   res.status(200).json(new ApiResponse(200, "Product deleted successfully"));
 };

@@ -15,5 +15,7 @@ export const approvedMerchantMiddleware = async (req, res, next) => {
     );
   }
 
+  req.merchant = merchant
+
   next();
 };

@@ -3,13 +3,7 @@ import Category from "@/module/category/category.model";
 import Product from "./product.model";
 import { ApiError } from "@/utils/ApiError";
 
-export const createProductService = async (data, userId) => {
-  const merchant = await Merchant.findOne({ userId });
-
-  if (!merchant) {
-    throw new ApiError(403, "Merchant profile not found");
-  }
-
+export const createProductService = async (data, merchantId) => {
   const { categoryId } = data;
 
   const category = await Category.findOne({
@@ -23,21 +17,15 @@ export const createProductService = async (data, userId) => {
 
   const product = await Product.create({
     ...data,
-    merchantId: merchant._id,
+    merchantId,
   });
 
   return product;
 };
 
-export const getMerchantProductsService = async (userId) => {
-  const merchant = await Merchant.findOne({ userId });
-
-  if (!merchant) {
-    throw new ApiError(403, "Merchant profile not found");
-  }
-
+export const getMerchantProductsService = async (merchantId) => {
   const products = await Product.find({
-    merchantId: merchant._id,
+    merchantId,
     isActive: true,
   });
 
@@ -56,15 +44,9 @@ export const updateProductService = async (
     throw new ApiError(400, "No fields provided for update");
   }
 
-  const merchant = await Merchant.findOne({ userId: merchantId });
-
-  if (!merchant) {
-    throw new ApiError(403, "Merchant profile not found");
-  }
-
   const product = await Product.findOne({
     _id: productId,
-    merchantId: merchant._id,
+    merchantId,
   });
   if (!product) throw new ApiError(404, "Product not found");
 
@@ -87,16 +69,10 @@ export const updateProductService = async (
   return product;
 };
 
-export const deleteProductService = async (productId, userId) => {
-  const merchant = await Merchant.findOne({ userId });
-
-  if (!merchant) {
-    throw new ApiError(403, "Merchant profile not found");
-  }
-
+export const deleteProductService = async (productId, merchantId) => {
   const product = await Product.findOne({
     _id: productId,
-    merchantId: merchant._id,
+    merchantId,
   });
 
   if (!product) {
@@ -126,7 +102,7 @@ export const getProductsService = async ({ page, limit, category, search }) => {
 
     query.categoryId = category;
   }
-  
+
   // SEARCH FILTER
   if (search) {
     query.$or = [
