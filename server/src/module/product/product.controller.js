@@ -69,11 +69,18 @@ export const deleteProduct = async (req, res) => {
 
 // @access  Public
 export const getProducts = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, errors.array()[0].msg);
+  }
+  
+  const { page = 1, limit = 10, category } = req.query;
 
   const result = await getProductsService({
     page: Number(page),
     limit: Number(limit),
+    category,
   });
 
   res
@@ -87,7 +94,7 @@ export const getProductById = async (req, res) => {
   if (!errors.isEmpty()) {
     throw new ApiError(400, errors.array()[0].msg);
   }
-  
+
   const { id } = req.params;
 
   const product = await getProductByIdService(id);

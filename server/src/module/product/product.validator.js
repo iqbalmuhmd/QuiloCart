@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 export const createProductValidator = [
   body("name")
@@ -74,4 +74,8 @@ export const updateProductValidator = [
 
 export const productIdValidator = [
   param("id").isMongoId().withMessage("Invalid product id"),
+];
+
+export const categoryFilterValidator = [
+  query("category").optional().isMongoId().withMessage("Invalid category id"),
 ];

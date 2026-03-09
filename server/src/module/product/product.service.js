@@ -108,10 +108,24 @@ export const deleteProductService = async (productId, userId) => {
   await product.save();
 };
 
-export const getProductsService = async ({ page, limit }) => {
+export const getProductsService = async ({ page, limit, category }) => {
   const skip = (page - 1) * limit;
 
   const query = { isActive: true };
+
+  // CATEGORY FILTER
+  if (category) {
+    const categoryExists = await Category.findOne({
+      _id: category,
+      isActive: true,
+    });
+
+    if (!categoryExists) {
+      throw new ApiError(404, "Category not found");
+    }
+
+    query.categoryId = category;
+  }
 
   const products = await Product.find(query)
     .populate("categoryId", "name")
