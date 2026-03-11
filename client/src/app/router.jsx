@@ -1,14 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import LoginPage from "@/features/auth/LoginPage";
-import RegisterPage from "@/features/auth/RegisterPage";
-import MerchantRegisterPage from "@/features/merchant/MerchantRegisterPage";
-import MerchantPendingPage from "@/features/merchant/MerchantPendingPage";
-import MerchantDashboardPage from "@/features/merchant/MerchantDashboardPage";
-import AdminLoginPage from "@/features/admin/AdminLoginPage";
-import AdminDashboardPage from "@/features/admin/AdminDashboardPage";
+import LoginPage from "@/features/auth/pages/LoginPage";
+import RegisterPage from "@/features/auth/pages/RegisterPage";
+import MerchantRegisterPage from "@/features/merchant/pages/MerchantRegisterPage";
+import MerchantPendingPage from "@/features/merchant/pages/MerchantPendingPage";
+import MerchantDashboardPage from "@/features/merchant/pages/MerchantDashboardPage";
+import AdminLoginPage from "@/features/admin/pages/AdminLoginPage";
+import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage";
 import AdminRoute from "@/routes/AdminRoute";
 import HomePage from "@/HomePage";
+import ShopPage from "@/features/catalog/pages/ShopPage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
@@ -74,6 +75,8 @@ const AppRouter = () => {
         />
 
         <Route path="/" element={<HomePage />} />
+
+        <Route path="/shop" element={<ShopPage />} />
       </Routes>
     </BrowserRouter>
   );
