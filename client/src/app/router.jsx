@@ -10,6 +10,7 @@ import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage";
 import AdminRoute from "@/routes/AdminRoute";
 import HomePage from "@/HomePage";
 import ShopPage from "@/features/catalog/pages/ShopPage";
+import ProductDetailPage from "@/features/catalog/pages/ProductDetailPage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
@@ -77,6 +78,7 @@ const AppRouter = () => {
         <Route path="/" element={<HomePage />} />
 
         <Route path="/shop" element={<ShopPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
       </Routes>
     </BrowserRouter>
   );
