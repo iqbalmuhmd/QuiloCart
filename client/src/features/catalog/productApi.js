@@ -5,7 +5,7 @@ const PRODUCT_ROUTES = {
   PRODUCT_BY_ID: (id) => `/products/${id}`,
 };
 
-export const getProducts = async (params = {}) => {
+const getProducts = async (params = {}) => {
   const response = await apiClient.get(PRODUCT_ROUTES.PRODUCTS, {
     params,
   });
@@ -21,7 +21,7 @@ export const getProducts = async (params = {}) => {
   };
 };
 
-export const getProductById = async (id) => {
+const getProductById = async (id) => {
   const response = await apiClient.get(PRODUCT_ROUTES.PRODUCT_BY_ID(id));
   return response.data.data;
 };
