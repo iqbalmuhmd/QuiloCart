@@ -1,16 +1,17 @@
 import apiClient from "@/services/apiClient";
 
-const CATALOG_ROUTES = {
+const PRODUCT_ROUTES = {
   PRODUCTS: "/products",
   PRODUCT_BY_ID: (id) => `/products/${id}`,
 };
 
 export const getProducts = async (params = {}) => {
-  const response = await apiClient.get(CATALOG_ROUTES.PRODUCTS, {
+  const response = await apiClient.get(PRODUCT_ROUTES.PRODUCTS, {
     params,
   });
 
   const data = response.data.data;
+  console.log("API response:", data);
 
   return {
     products: data.products,
@@ -21,13 +22,13 @@ export const getProducts = async (params = {}) => {
 };
 
 export const getProductById = async (id) => {
-  const response = await apiClient.get(CATALOG_ROUTES.PRODUCT_BY_ID(id));
+  const response = await apiClient.get(PRODUCT_ROUTES.PRODUCT_BY_ID(id));
   return response.data.data;
 };
 
-const catalogApi = {
+const productApi = {
   getProducts,
   getProductById,
 };
 
-export default catalogApi;
+export default productApi;

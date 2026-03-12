@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import catalogApi from "../productApi";
+import productApi from "../productApi";
+import categoryApi from "../categoryApi";
 import ProductCard from "@/components/catalog/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [total, setTotal] = useState(0);
 
   const [loading, setLoading] = useState(false);
@@ -15,6 +17,7 @@ const ShopPage = () => {
     page: 1,
     limit: 12,
     search: "",
+    category: "",
   });
 
   useEffect(() => {
@@ -23,7 +26,7 @@ const ShopPage = () => {
         setLoading(true);
         setError(null);
 
-        const data = await catalogApi.getProducts(query);
+        const data = await productApi.getProducts(query);
 
         setProducts(data.products);
         setTotal(data.total);
@@ -37,6 +40,19 @@ const ShopPage = () => {
 
     fetchProducts();
   }, [query]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoryApi.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const totalPages = Math.ceil(total / query.limit);
 
@@ -78,6 +94,26 @@ const ShopPage = () => {
         value={query.search}
         onChange={handleSearch}
       />
+
+      <select
+        value={query.category}
+        onChange={(e) =>
+          setQuery((prev) => ({
+            ...prev,
+            category: e.target.value,
+            page: 1,
+          }))
+        }
+        className="border rounded-md p-2"
+      >
+        <option value="">All Categories</option>
+
+        {categories.map((cat) => (
+          <option key={cat._id} value={cat._id}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
 
       {products.length === 0 ? (
         <p>No products available</p>
