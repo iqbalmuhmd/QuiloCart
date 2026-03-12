@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import catalogApi from "../productApi";
 import ProductCard from "@/components/catalog/ProductCard";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -13,6 +14,7 @@ const ShopPage = () => {
   const [query, setQuery] = useState({
     page: 1,
     limit: 12,
+    search: "",
   });
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const ShopPage = () => {
     };
 
     fetchProducts();
-  }, [query.page]);
+  }, [query]);
 
   const totalPages = Math.ceil(total / query.limit);
 
@@ -52,10 +54,17 @@ const ShopPage = () => {
     }));
   };
 
-  if (loading) {
-    return <div className="max-w-6xl mx-auto p-6">Loading products...</div>;
-  }
+  const handleSearch = (e) => {
+    setQuery((prev) => ({
+      ...prev,
+      search: e.target.value,
+      page: 1,
+    }));
+  };
 
+  {
+    loading && <p>Loading products...</p>;
+  }
   if (error) {
     return <div className="max-w-6xl mx-auto p-6 text-red-500">{error}</div>;
   }
@@ -63,6 +72,12 @@ const ShopPage = () => {
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Shop</h1>
+
+      <Input
+        placeholder="Search products..."
+        value={query.search}
+        onChange={handleSearch}
+      />
 
       {products.length === 0 ? (
         <p>No products available</p>
