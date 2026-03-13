@@ -33,9 +33,7 @@ const updateProduct = async (id, productData) => {
 };
 
 const deleteProduct = async (id) => {
-  const response = await apiClient.delete(MERCHANT_ROUTES.PRODUCT_BY_ID(id));
-
-  return response.data.data;
+  await apiClient.delete(MERCHANT_ROUTES.PRODUCT_BY_ID(id));
 };
 
 const merchantApi = {

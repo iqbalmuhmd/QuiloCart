@@ -1,10 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
 import MerchantRegisterPage from "@/features/merchant/pages/MerchantRegisterPage";
 import MerchantPendingPage from "@/features/merchant/pages/MerchantPendingPage";
 import MerchantDashboardPage from "@/features/merchant/pages/MerchantDashboardPage";
+import MerchantProductsPage from "@/features/merchant/pages/MerchantProductsPage";
+import MerchantLayout from "@/features/merchant/components/MerchantLayout";
 import AdminLoginPage from "@/features/admin/pages/AdminLoginPage";
 import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage";
 import AdminRoute from "@/routes/AdminRoute";
@@ -56,13 +58,17 @@ const AppRouter = () => {
         />
 
         <Route
-          path="/merchant/dashboard"
+          path="/merchant"
           element={
             <MerchantRoute>
-              <MerchantDashboardPage />
+              <MerchantLayout />
             </MerchantRoute>
           }
-        />
+        >
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<MerchantDashboardPage />} />
+          <Route path="products" element={<MerchantProductsPage />} />
+        </Route>
 
         <Route path="/admin/login" element={<AdminLoginPage />} />
 
