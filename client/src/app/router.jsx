@@ -17,6 +17,7 @@ import ProductDetailPage from "@/features/catalog/pages/ProductDetailPage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
+import EditProductPage from "@/features/merchant/pages/EditProductPage";
 
 const AppRouter = () => {
   return (
@@ -69,7 +70,8 @@ const AppRouter = () => {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<MerchantDashboardPage />} />
           <Route path="products" element={<MerchantProductsPage />} />
-          <Route path="products/create" element={<CreateProductPage />} />m
+          <Route path="products/create" element={<CreateProductPage />} />
+          <Route path="products/:id/edit" element={<EditProductPage />} />
         </Route>
 
         <Route
