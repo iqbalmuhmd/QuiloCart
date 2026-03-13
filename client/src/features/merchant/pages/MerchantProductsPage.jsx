@@ -10,6 +10,7 @@ const MerchantProductsPage = () => {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchProducts = async () => {
     try {
@@ -32,11 +33,15 @@ const MerchantProductsPage = () => {
     if (!confirmed) return;
 
     try {
+      setDeletingId(id);
+
       await merchantApi.deleteProduct(id);
 
       setProducts((prev) => prev.filter((p) => p._id !== id));
     } catch (err) {
       console.error("Delete failed", err);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -76,7 +81,16 @@ const MerchantProductsPage = () => {
               <CardTitle className="text-lg">{product.name}</CardTitle>
             </CardHeader>
 
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
+              {/* Product image */}
+              {product.images?.[0] && (
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  className="w-full h-40 object-cover rounded-md"
+                />
+              )}
+
               <p className="text-sm text-muted-foreground">
                 Price: ${product.price}
               </p>
@@ -99,9 +113,10 @@ const MerchantProductsPage = () => {
                 <Button
                   variant="destructive"
                   size="sm"
+                  disabled={deletingId === product._id}
                   onClick={() => handleDelete(product._id)}
                 >
-                  Delete
+                  {deletingId === product._id ? "Deleting..." : "Delete"}
                 </Button>
               </div>
             </CardContent>
