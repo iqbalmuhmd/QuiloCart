@@ -22,4 +22,21 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-export default apiClient
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (window.location.pathname !== "/login") {
+        localStorage.removeItem("token");
+
+        setTimeout(() => {
+          window.location.replace("/login");
+        }, 0);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export default apiClient;

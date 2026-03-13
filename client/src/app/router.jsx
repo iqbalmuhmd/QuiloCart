@@ -6,6 +6,7 @@ import MerchantRegisterPage from "@/features/merchant/pages/MerchantRegisterPage
 import MerchantPendingPage from "@/features/merchant/pages/MerchantPendingPage";
 import MerchantDashboardPage from "@/features/merchant/pages/MerchantDashboardPage";
 import MerchantProductsPage from "@/features/merchant/pages/MerchantProductsPage";
+import CreateProductPage from "@/features/merchant/pages/CreateProductPage";
 import MerchantLayout from "@/features/merchant/components/MerchantLayout";
 import AdminLoginPage from "@/features/admin/pages/AdminLoginPage";
 import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage";
@@ -68,7 +69,13 @@ const AppRouter = () => {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<MerchantDashboardPage />} />
           <Route path="products" element={<MerchantProductsPage />} />
+          <Route path="products/create" element={<CreateProductPage />} />m
         </Route>
+
+        <Route
+          path="/merchant/products/create"
+          element={<CreateProductPage />}
+        />
 
         <Route path="/admin/login" element={<AdminLoginPage />} />
 
