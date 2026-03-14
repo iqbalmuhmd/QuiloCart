@@ -14,7 +14,7 @@ export const loginAdmin = async ({ email, password }) => {
   }
 
   if (user.role !== USER_ROLES.ADMIN) {
-    throw new ApiError(403, "Not an admin account");
+    throw new ApiError(403, "Invalid email or password");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);

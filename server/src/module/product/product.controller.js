@@ -72,7 +72,7 @@ export const getProducts = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  const { page = 1, limit = 10, category, search } = req.query;
+  const { page = 1, limit = 12, category, search } = req.query;
 
   const result = await getProductsService({
     page: Number(page),

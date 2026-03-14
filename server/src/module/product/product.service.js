@@ -1,4 +1,3 @@
-import Merchant from "@/module/merchant/merchant.model";
 import Category from "@/module/category/category.model";
 import Product from "./product.model";
 import { ApiError } from "@/utils/ApiError";
@@ -111,13 +110,15 @@ export const getProductsService = async ({ page, limit, category, search }) => {
     ];
   }
 
-  const products = await Product.find(query)
-    .populate("categoryId", "name")
-    .populate("merchantId", "storeName")
-    .skip(skip)
-    .limit(limit);
+  const [products, total] = await Promise.all([
+    Product.find(query)
+      .populate("categoryId", "name")
+      .populate("merchantId", "storeName")
+      .skip(skip)
+      .limit(limit),
 
-  const total = await Product.countDocuments(query);
+    Product.countDocuments(query),
+  ]);
 
   const formattedProducts = products.map((p) => ({
     _id: p._id,
@@ -161,6 +162,7 @@ export const getProductByIdService = async (id) => {
     price: product.price,
     stock: product.stock,
     images: product.images,
+    categoryId: product.categoryId?._id,
     category: {
       name: product.categoryId?.name,
     },

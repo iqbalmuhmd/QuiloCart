@@ -4,7 +4,9 @@ import { ApiError } from "@/utils/ApiError";
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) return next(new ApiError(401, "No token provided."));
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new ApiError(401, "No token provided"));
+  }
 
   const token = authHeader.split(" ")[1];
 
