@@ -8,9 +8,11 @@ import { withTransaction } from "@/utils/withTransaction";
 export const registerMerchantService = async ({
   name,
   email,
+  phone,
+  avatar,
   password,
   storeName,
-  storeDescription,u
+  storeDescription,
 }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new ApiError(409, "Email already exists");
@@ -21,6 +23,8 @@ export const registerMerchantService = async ({
         {
           name,
           email,
+          phone,
+          avatar,
           password,
           role: USER_ROLES.MERCHANT,
         },
@@ -45,6 +49,8 @@ export const registerMerchantService = async ({
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
         role: user.role,
       },
       merchant: {

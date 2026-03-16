@@ -13,6 +13,8 @@ export const formatUserResponse = async (user) => {
   return {
     userId: user._id,
     name: user.name,
+    phone: user.phone,
+    avatar: user.avatar,
     email: user.email,
     role: user.role,
     merchant,

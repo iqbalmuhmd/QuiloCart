@@ -9,11 +9,14 @@ export const registerMerchant = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  const { name, email, password, storeName, storeDescription } = req.body;
+  const { name, email, phone, avatar, password, storeName, storeDescription } =
+    req.body;
 
   const result = await registerMerchantService({
     name,
     email,
+    phone,
+    avatar,
     password,
     storeName,
     storeDescription,

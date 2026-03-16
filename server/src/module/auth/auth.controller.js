@@ -15,11 +15,13 @@ export const register = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  const { name, email, password } = req.body;
+  const { name, email, phone, avatar, password } = req.body;
 
   const user = await registerUser({
     name,
     email,
+    phone,
+    avatar,
     password,
   });
 

@@ -1,16 +1,10 @@
 import { body, param } from "express-validator";
 
 export const updateProfileValidator = [
-  body("firstName")
+  body("name")
     .optional()
     .isString()
     .withMessage("First name must be a string")
-    .trim(),
-
-  body("lastName")
-    .optional()
-    .isString()
-    .withMessage("Last name must be a string")
     .trim(),
 
   body("phone")

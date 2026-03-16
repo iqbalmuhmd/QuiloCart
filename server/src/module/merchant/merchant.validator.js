@@ -13,6 +13,16 @@ export const registerMerchantValidator = [
     .isEmail()
     .withMessage("Invalid email format"),
 
+  body("phone")
+    .optional()
+    .isMobilePhone()
+    .withMessage("Valid phone number is required"),
+
+  body("avatar")
+    .optional()
+    .isString()
+    .withMessage("Avatar must be a string"),
+
   body("password")
     .notEmpty()
     .withMessage("Password is required")

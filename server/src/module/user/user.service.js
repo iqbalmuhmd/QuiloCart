@@ -22,7 +22,7 @@ export const updateProfileService = async (userId, data) => {
 
   if (name !== undefined) user.name = name;
   if (phone !== undefined) user.phone = phone;
-  if (avatar !== undefined) user.avatar = phone;
+  if (avatar !== undefined) user.avatar = avatar;
 
   await user.save();
 
