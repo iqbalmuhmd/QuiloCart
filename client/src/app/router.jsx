@@ -7,13 +7,15 @@ import MerchantPendingPage from "@/features/merchant/pages/MerchantPendingPage";
 import MerchantDashboardPage from "@/features/merchant/pages/MerchantDashboardPage";
 import MerchantProductsPage from "@/features/merchant/pages/MerchantProductsPage";
 import CreateProductPage from "@/features/merchant/pages/CreateProductPage";
-import MerchantLayout from "@/features/merchant/components/MerchantLayout";
+import MerchantLayout from "@/features/merchant/layout/MerchantLayout";
 import AdminLoginPage from "@/features/admin/pages/AdminLoginPage";
 import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage";
 import AdminRoute from "@/routes/AdminRoute";
 import HomePage from "@/HomePage";
 import ShopPage from "@/features/catalog/pages/ShopPage";
 import ProductDetailPage from "@/features/catalog/pages/ProductDetailPage";
+import UserLayout from "@/features/user/layout/UserLayout";
+import ProfilePage from "@/features/user/pages/ProfilePage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
@@ -94,6 +96,11 @@ const AppRouter = () => {
 
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
+
+        <Route path="/profile" element={<UserLayout />}>
+          <Route index element={<ProfilePage />} />
+          <Route path="addresses" element={<div>Addresses Page</div>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

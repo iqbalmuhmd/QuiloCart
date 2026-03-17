@@ -12,6 +12,7 @@ const RegisterPage = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ const RegisterPage = () => {
       setLoading(true);
       setError(null);
 
-      await authApi.register({ name, email, password });
+      await authApi.register({ name, email, phone, password });
 
       navigate("/login");
     } catch (err) {
@@ -69,6 +70,12 @@ const RegisterPage = () => {
             />
 
             <Input
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+
+            <Input
               type="password"
               placeholder="Password"
               value={password}
@@ -98,7 +105,7 @@ const RegisterPage = () => {
                 Register as Merchant
               </button>
             </p>
-            
+
             <p className="text-sm text-muted-foreground text-center">
               Already have an account?{" "}
               <button

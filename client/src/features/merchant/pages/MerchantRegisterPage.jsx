@@ -11,6 +11,7 @@ const MerchantRegisterPage = () => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [storeName, setStoreName] = useState("");
   const [storeDescription, setStoreDescription] = useState("");
@@ -28,6 +29,7 @@ const MerchantRegisterPage = () => {
       await merchantApi.merchantRegister({
         name,
         email,
+        phone,
         password,
         storeName,
         storeDescription,
@@ -60,6 +62,12 @@ const MerchantRegisterPage = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <Input
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
 
             <Input
