@@ -36,7 +36,9 @@ export const createAddressService = async (userId, data) => {
     throw new ApiError(404, "User not found");
   }
 
-  if (data.isDefault) {
+  if (user.addresses.length === 0) {
+    data.isDefault = true;
+  } else if (data.isDefault) {
     user.addresses.forEach((addr) => {
       addr.isDefault = false;
     });
