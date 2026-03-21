@@ -20,6 +20,7 @@ import ProfilePage from "@/features/user/pages/ProfilePage";
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
 import EditProductPage from "@/features/merchant/pages/EditProductPage";
+import AddressPage from "@/features/user/pages/AddressPage";
 
 const AppRouter = () => {
   return (
@@ -99,7 +100,7 @@ const AppRouter = () => {
 
         <Route path="/profile" element={<UserLayout />}>
           <Route index element={<ProfilePage />} />
-          <Route path="addresses" element={<div>Addresses Page</div>} />
+          <Route path="addresses" element={<AddressPage/>} />
         </Route>
       </Routes>
     </BrowserRouter>
