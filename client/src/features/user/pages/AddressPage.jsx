@@ -3,10 +3,13 @@ import addressApi from "../addressApi";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 const AddressPage = () => {
+  const { toast } = useToast();
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -101,10 +104,26 @@ const AddressPage = () => {
     if (!confirmed) return;
 
     try {
+      setDeletingId(id);
+
       await addressApi.deleteAddress(id);
+
       setAddresses((prev) => prev.filter((a) => a._id !== id));
+
+      toast({
+        title: "Deleted",
+        description: "Address removed successfully",
+      });
     } catch (err) {
       console.error("Delete failed", err);
+
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete address",
+      });
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -225,11 +244,10 @@ const AddressPage = () => {
                 </Button>
 
                 <Button
-                  size="sm"
-                  variant="destructive"
+                  disabled={deletingId === addr._id}
                   onClick={() => handleDelete(addr._id)}
                 >
-                  Delete
+                  {deletingId === addr._id ? "Deleting..." : "Delete"}
                 </Button>
               </div>
             </div>

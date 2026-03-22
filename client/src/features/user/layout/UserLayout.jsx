@@ -36,7 +36,7 @@ const UserLayout = () => {
 
           {/* Future */}
           <NavLink
-            to="/wishlist"
+            to="/profile/wishlist"
             className={({ isActive }) =>
               `px-3 py-2 rounded-md text-sm transition ${
                 isActive

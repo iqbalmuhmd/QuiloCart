@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getMeThunk } from "@/features/auth/authSlice";
 import AppRouter from "@/app/router";
+import { Toaster } from "@/components/ui/toaster";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,12 @@ const App = () => {
     );
   }
 
-  return <AppRouter />;
+  return (
+    <>
+      <AppRouter />
+      <Toaster />
+    </>
+  );
 };
 
 export default App;
