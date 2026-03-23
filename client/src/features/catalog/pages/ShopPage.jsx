@@ -4,6 +4,7 @@ import categoryApi from "../categoryApi";
 import ProductCard from "@/components/catalog/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSelector } from "react-redux";
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -19,6 +20,8 @@ const ShopPage = () => {
     search: "",
     category: "",
   });
+
+  const wishlistItems = useSelector((state) => state.wishlist.items);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -78,6 +81,8 @@ const ShopPage = () => {
     }));
   };
 
+  const wishlistedIds = new Set(wishlistItems.map((item) => item.id));
+
   {
     loading && <p>Loading products...</p>;
   }
@@ -120,7 +125,11 @@ const ShopPage = () => {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard
+              key={product._id}
+              product={product}
+              isWishlisted={wishlistedIds.has(product._id)}
+            />
           ))}
         </div>
       )}

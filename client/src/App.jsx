@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getMeThunk } from "@/features/auth/authSlice";
+import { fetchWishlist } from "@/features/wishlist/wishlistSlice";
 import AppRouter from "@/app/router";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -10,8 +11,11 @@ const App = () => {
   const { token, user, authLoading } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (token && !user) {
-      dispatch(getMeThunk());
+    if (token) {
+      if (!user) {
+        dispatch(getMeThunk());
+      }
+      dispatch(fetchWishlist());
     }
   }, [token, user, dispatch]);
 

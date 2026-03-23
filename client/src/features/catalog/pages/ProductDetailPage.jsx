@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import catalogApi from "../productApi";
 import StockIndicator from "@/components/catalog/StockIndicator";
+import { useDispatch } from "react-redux";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "@/features/wishlist/wishlistSlice";
+import { toast } from "@/hooks/use-toast";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [toggling, setToggling] = useState(false);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -38,6 +48,40 @@ const ProductDetailPage = () => {
 
   if (!product) return null;
 
+  const isWishlisted = wishlistItems.some((item) => item.id === product._id);
+
+  const handleToggleWishlist = async () => {
+    if (toggling) return;
+
+    setToggling(true);
+
+    try {
+      if (isWishlisted) {
+        dispatch(removeFromWishlist(product._id));
+
+        toast({
+          title: "Removed",
+          description: "Item removed from wishlist",
+        });
+      } else {
+        dispatch(addToWishlist(product._id));
+
+        toast({
+          title: "Added",
+          description: "Item added to wishlist",
+        });
+      }
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Something went wrong",
+      });
+    } finally {
+      setToggling(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Product Image */}
@@ -59,6 +103,10 @@ const ProductDetailPage = () => {
 
         <p className="text-xl font-semibold">${product.price}</p>
 
+        <button onClick={handleToggleWishlist} disabled={toggling}>
+          {isWishlisted ? "❤️" : "🤍"}
+        </button>
+        
         <StockIndicator stock={product.stock} />
 
         <p className="text-gray-700 pt-4">{product.description}</p>
