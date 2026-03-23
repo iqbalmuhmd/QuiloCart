@@ -100,7 +100,13 @@ export const deleteAddressService = async (userId, addressId) => {
     throw new ApiError(404, "Address not found");
   }
 
+  const wasDefault = address.isDefault;
+
   address.deleteOne();
+
+  if (wasDefault && user.addresses.length > 0) {
+    user.addresses[0].isDefault = true;
+  }
 
   await user.save();
 };
