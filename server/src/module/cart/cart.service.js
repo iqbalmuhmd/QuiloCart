@@ -61,7 +61,14 @@ export const addToCartService = async (userId, productId, quantity = 1) => {
 };
 
 export const getCartService = async (userId) => {
-  const cart = await Cart.findOne({ userId });
+  const cart = await Cart.findOne({ userId }).populate({
+    path: "items.productId",
+    select: "name price images merchantId isActive",
+    populate: {
+      path: "merchantId",
+      select: "storeName",
+    },
+  });
 
   if (!cart) {
     return {
@@ -69,8 +76,21 @@ export const getCartService = async (userId) => {
     };
   }
 
+  const formattedCart = cart.items
+    .filter((item) => item.productId && item.productId.isActive)
+    .map((item) => ({
+      product: {
+        id: item.productId._id,
+        name: item.productId.name,
+        price: item.productId.price,
+        image: item.productId.images?.[0] || null,
+        merchant: item.productId.merchantId?.storeName || null,
+      },
+      quantity: item.quantity,
+    }));
+
   return {
-    items: cart.items,
+    cart: formattedCart,
   };
 };
 
