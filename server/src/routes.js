@@ -7,6 +7,7 @@ import categoryRoutes from "@/module/category/category.routes";
 import merchantProductRoutes from "@/module/product/merchantProduct.routes";
 import publicProductRoutes from "@/module/product/publicProduct.routes";
 import wishlistRoutes from "@/module/wishlist/wishlist.routes";
+import cartRoutes from "@/module/cart/cart.routes";
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.use("/categories", categoryRoutes);
 
 // @access Private (User)
 router.use("/wishlist", wishlistRoutes);
+router.use("/cart", cartRoutes);
 router.use("/", userRoutes);
 
 // @access  Private (Merchant)
