@@ -72,25 +72,46 @@ export const getCartService = async (userId) => {
 
   if (!cart) {
     return {
-      items: [],
+      cart: [],
+      totalItems: 0,
+      totalQuantity: 0,
+      totalAmount: 0,
     };
   }
 
-  const formattedCart = cart.items
-    .filter((item) => item.productId && item.productId.isActive)
-    .map((item) => ({
+  cart.items = cart.items.filter(
+    (item) => item.productId && item.productId.isActive,
+  );
+
+  await cart.save();
+
+  let totalQuantity = 0;
+  let totalAmount = 0;
+
+  const formattedCart = cart.items.map((item) => {
+    const product = item.productId;
+
+    totalQuantity += item.quantity;
+    totalAmount += product.price * item.quantity;
+
+    return {
+      id: item._id,
       product: {
-        id: item.productId._id,
-        name: item.productId.name,
-        price: item.productId.price,
-        image: item.productId.images?.[0] || null,
-        merchant: item.productId.merchantId?.storeName || null,
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0] || null,
+        merchant: product.merchantId?.storeName || null,
       },
       quantity: item.quantity,
-    }));
+    };
+  });
 
   return {
     cart: formattedCart,
+    totalItems: formattedCart.length,
+    totalQuantity,
+    totalAmount,
   };
 };
 
