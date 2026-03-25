@@ -35,7 +35,7 @@ const orderItemSchema = new mongoose.Schema(
 
 const addressSnapshotSchema = new mongoose.Schema(
   {
-    fullName: { type: String, required: true },
+    name: { type: String, required: true },
     phone: { type: String, required: true },
     addressLine1: { type: String, required: true },
     addressLine2: { type: String },
