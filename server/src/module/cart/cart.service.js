@@ -12,6 +12,10 @@ export const addToCartService = async (userId, productId, quantity = 1) => {
     throw new ApiError(404, "Product not found");
   }
 
+  if (product.stock === 0) {
+    throw new ApiError(400, "Product is out of stock");
+  }
+
   let cart = await Cart.findOne({ userId });
 
   if (!cart) {
@@ -63,7 +67,7 @@ export const addToCartService = async (userId, productId, quantity = 1) => {
 export const getCartService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
     path: "items.productId",
-    select: "name price images merchantId isActive",
+    select: "name price images merchantId isActive stock",
     populate: {
       path: "merchantId",
       select: "storeName",
@@ -79,37 +83,39 @@ export const getCartService = async (userId) => {
     };
   }
 
-  cart.items = cart.items.filter(
-    (item) => item.productId && item.productId.isActive,
-  );
-
-  await cart.save();
-
   let totalQuantity = 0;
   let totalAmount = 0;
 
   const formattedCart = cart.items.map((item) => {
     const product = item.productId;
 
-    totalQuantity += item.quantity;
-    totalAmount += product.price * item.quantity;
+    const isActive = product && product.isActive;
+    const inStock = product && product.stock > 0;
+
+    if (isActive && inStock) {
+      totalQuantity += item.quantity;
+      totalAmount += product.price * item.quantity;
+    }
 
     return {
       id: item._id,
       product: {
-        id: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.images?.[0] || null,
-        merchant: product.merchantId?.storeName || null,
+        id: product?._id || null,
+        name: product?.name || "Product unavailable",
+        price: product?.price || 0,
+        image: product?.images?.[0] || null,
+        merchant: product?.merchantId?.storeName || null,
       },
       quantity: item.quantity,
+      isActive,
+      inStock,
     };
   });
 
   return {
     cart: formattedCart,
-    totalItems: formattedCart.length,
+    totalItems: formattedCart.filter((item) => item.isActive && item.inStock)
+      .length,
     totalQuantity,
     totalAmount,
   };
