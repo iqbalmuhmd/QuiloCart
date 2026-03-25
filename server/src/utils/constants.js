@@ -9,3 +9,8 @@ export const MERCHANT_STATUS = {
   APPROVED: "APPROVED",
   REJECTED: "REJECTED",
 };
+
+export const ORDER_STATUS = {
+  CREATED: "CREATED",
+  CANCELLED: "CANCELLED",
+};
