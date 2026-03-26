@@ -194,3 +194,42 @@ export const placeOrderService = async (userId, addressId) => {
     return order;
   });
 };
+
+export const getOrdersService = async (userId) => {
+  const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+
+  return orders;
+};
+
+export const getOrderByIdService = async (userId, orderId) => {
+  const order = await Order.findOne({
+    _id: orderId,
+    userId,
+  });
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  return order;
+};
+
+export const cancelOrderService = async (userId, orderId) => {
+  const order = await Order.findOne({
+    _id: orderId,
+    userId,
+  });
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  if (order.status !== "CREATED") {
+    throw new ApiError(400, "Order cannot be cancelled");
+  }
+
+  order.status = "CANCELLED";
+  await order.save();
+
+  return null;
+};
