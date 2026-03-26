@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import {
   checkoutService,
   placeOrderService,
@@ -6,6 +7,7 @@ import {
   cancelOrderService,
 } from "./order.service";
 import { ApiResponse } from "@/utils/ApiResponse";
+import { ApiError } from "@/utils/ApiError";
 
 export const checkout = async (req, res) => {
   const errors = validationResult(req);

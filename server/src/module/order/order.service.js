@@ -3,6 +3,7 @@ import User from "@/module/user/user.model";
 import Product from "@/module/product/product.model";
 import Order from "./order.model";
 import { ApiError } from "@/utils/ApiError";
+import { withTransaction } from "@/utils/withTransaction";
 
 export const checkoutService = async (userId, addressId) => {
   const cart = await Cart.findOne({ userId }).populate({
