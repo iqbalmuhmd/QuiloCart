@@ -216,21 +216,34 @@ export const getOrderByIdService = async (userId, orderId) => {
 };
 
 export const cancelOrderService = async (userId, orderId) => {
-  const order = await Order.findOne({
-    _id: orderId,
-    userId,
+  return withTransaction(async (session) => {
+    const order = await Order.findOne({ _id: orderId, userId }).session(
+      session,
+    );
+
+    if (!order) {
+      throw new ApiError(404, "Order not found");
+    }
+
+    if (order.status !== ORDER_STATUS.CREATED) {
+      throw new ApiError(400, "Order cannot be cancelled");
+    }
+
+    for (const item of order.items) {
+      const updated = await Product.findByIdAndUpdate(
+        item.productId,
+        { $inc: { stock: item.quantity } },
+        { session },
+      );
+
+      if (!updated) {
+        throw new ApiError(400, "Failed to restore product stock");
+      }
+    }
+
+    order.status = ORDER_STATUS.CANCELLED;
+    await order.save({ session });
+
+    return order;
   });
-
-  if (!order) {
-    throw new ApiError(404, "Order not found");
-  }
-
-  if (order.status !== "CREATED") {
-    throw new ApiError(400, "Order cannot be cancelled");
-  }
-
-  order.status = "CANCELLED";
-  await order.save();
-
-  return null;
 };
