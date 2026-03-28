@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getMeThunk } from "@/features/auth/authSlice";
 import { fetchWishlist } from "@/features/wishlist/wishlistSlice";
+import { fetchCart } from "./features/cart/cartSlice";
 import AppRouter from "@/app/router";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -16,6 +17,7 @@ const App = () => {
         dispatch(getMeThunk());
       }
       dispatch(fetchWishlist());
+      dispatch(fetchCart());
     }
   }, [token, user, dispatch]);
 
