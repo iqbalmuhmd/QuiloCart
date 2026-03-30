@@ -50,7 +50,7 @@ export const removeCartItem = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  await removeCartItemService(req.user.userId, req.params.id);
+  const cart = await removeCartItemService(req.user.userId, req.params.id);
 
-  res.status(200).json(new ApiResponse(200, "Cart item removed", null));
+  res.status(200).json(new ApiResponse(200, "Cart item removed", cart));
 };

@@ -44,11 +44,13 @@ export const addToCartService = async (userId, productId, quantity = 1) => {
     await cart.save();
   }
 
-  return formatCart(await getPopulatedCart(userId));
+  const updatedCart = await getPopulatedCart(userId);
+  return formatCart(updatedCart);
 };
 
 export const getCartService = async (userId) => {
-  return formatCart(await getPopulatedCart(userId));
+  const updatedCart = await getPopulatedCart(userId);
+  return formatCart(updatedCart);
 };
 
 export const updateCartItemService = async (userId, itemId, quantity) => {
@@ -71,7 +73,8 @@ export const updateCartItemService = async (userId, itemId, quantity) => {
   item.quantity = quantity;
   await cart.save();
 
-  return formatCart(await getPopulatedCart(userId));
+  const updatedCart = await getPopulatedCart(userId);
+  return formatCart(updatedCart);
 };
 
 export const removeCartItemService = async (userId, itemId) => {
@@ -85,5 +88,6 @@ export const removeCartItemService = async (userId, itemId) => {
   item.deleteOne();
   await cart.save();
 
-  return null;
+  const updatedCart = await getPopulatedCart(userId);
+  return formatCart(updatedCart);
 };
