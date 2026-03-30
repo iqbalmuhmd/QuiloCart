@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { updateCartItem, removeCartItem } from "../cartSlice";
+import { updateCartItem, removeCartItem, clearError } from "../cartSlice";
 
 const CartPage = () => {
   const { toast } = useToast();
@@ -10,6 +10,7 @@ const CartPage = () => {
   const { items, totalAmount, loading, error } = useSelector(
     (state) => state.cart,
   );
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
     if (error) {
@@ -18,31 +19,52 @@ const CartPage = () => {
         title: "Error",
         description: error,
       });
+      dispatch(clearError());
     }
-  }, [error, toast]);
+  }, [error, toast, dispatch]);
 
-  const handleIncrease = (item) => {
-    dispatch(
-      updateCartItem({
-        itemId: item.id,
-        quantity: item.quantity + 1,
-      }),
-    );
+  const handleIncrease = async (item) => {
+    try {
+      setUpdatingId(item.id);
+      await dispatch(
+        updateCartItem({
+          itemId: item.id,
+          quantity: item.quantity + 1,
+        }),
+      ).unwrap();
+    } catch (err) {
+      // handled by redux + useEffect toast
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
-  const handleDecrease = (item) => {
+  const handleDecrease = async (item) => {
     if (item.quantity === 1) return;
-
-    dispatch(
-      updateCartItem({
-        itemId: item.id,
-        quantity: item.quantity - 1,
-      }),
-    );
+    try {
+      setUpdatingId(item.id);
+      await dispatch(
+        updateCartItem({
+          itemId: item.id,
+          quantity: item.quantity - 1,
+        }),
+      ).unwrap();
+    } catch (err) {
+      // handled by redux + useEffect toast
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
-  const handleRemove = (item) => {
-    dispatch(removeCartItem(item.id));
+  const handleRemove = async (item) => {
+    try {
+      setUpdatingId(item.id);
+      await dispatch(removeCartItem(item.id)).unwrap();
+    } catch (err) {
+      // handled by redux + useEffect toast
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   return (
@@ -63,7 +85,7 @@ const CartPage = () => {
               </p>
 
               <button
-                disabled={loading}
+                disabled={updatingId === item.id}
                 onClick={() => handleRemove(item)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 border rounded font-semibold disabled:opacity-50"
               >
@@ -85,7 +107,7 @@ const CartPage = () => {
 
                 <div className="flex items-center gap-2">
                   <button
-                    disabled={loading}
+                    disabled={updatingId === item.id}
                     onClick={() => handleDecrease(item)}
                     className="px-2 py-1 border rounded disabled:opacity-50"
                   >
@@ -95,7 +117,7 @@ const CartPage = () => {
                   <span>{item.quantity}</span>
 
                   <button
-                    disabled={loading}
+                    disabled={updatingId === item.id}
                     onClick={() => handleIncrease(item)}
                     className="px-2 py-1 border rounded disabled:opacity-50"
                   >
