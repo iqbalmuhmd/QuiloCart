@@ -40,6 +40,10 @@ export const updateCartItem = async (itemId, quantity) => {
 export const removeCartItem = async (itemId) => {
   const response = await apiClient.delete(CART_ROUTES.ITEM(itemId));
 
+  console.log("response.data", response.data);
+console.log("response.data.data", response.data.data);
+
+
   return normalizeCart(response.data.data);
 };
 

@@ -22,6 +22,8 @@ import MerchantRoute from "@/routes/MerchantRoute";
 import EditProductPage from "@/features/merchant/pages/EditProductPage";
 import AddressPage from "@/features/user/pages/AddressPage";
 import WishlistPage from "@/features/wishlist/pages/WishlistPage";
+import { Rotate3D } from "lucide-react";
+import CartPage from "@/features/cart/pages/CartPage";
 
 const AppRouter = () => {
   return (
@@ -104,6 +106,7 @@ const AppRouter = () => {
           <Route path="addresses" element={<AddressPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
         </Route>
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </BrowserRouter>
   );
