@@ -8,6 +8,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "@/features/wishlist/wishlistSlice";
+import { addToCart } from "@/features/cart/cartSlice";
 import { toast } from "@/hooks/use-toast";
 
 const ProductDetailPage = () => {
@@ -82,6 +83,23 @@ const ProductDetailPage = () => {
     }
   };
 
+  const handleAddToCart = async (productId) => {
+    try {
+      await dispatch(addToCart({ productId, quantity: 1 })).unwrap();
+
+      toast({
+        title: "Added",
+        description: "Item added to cart",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err,
+      });
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Product Image */}
@@ -106,8 +124,16 @@ const ProductDetailPage = () => {
         <button onClick={handleToggleWishlist} disabled={toggling}>
           {isWishlisted ? "❤️" : "🤍"}
         </button>
-        
+
         <StockIndicator stock={product.stock} />
+
+        <button
+          disabled={product.stock === 0}
+          onClick={() => handleAddToCart(product._id)}
+          className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
+        >
+          {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+        </button>
 
         <p className="text-gray-700 pt-4">{product.description}</p>
       </div>

@@ -4,6 +4,8 @@ import { USER_ROLES, MERCHANT_STATUS } from "@/constants";
 const useAuth = () => {
   const auth = useSelector((state) => state.auth);
 
+  const isUser = auth.user?.role === USER_ROLES.USER;
+
   const isMerchant = auth.user?.role === USER_ROLES.MERCHANT;
 
   const isAdmin = auth.user?.role === USER_ROLES.ADMIN;
@@ -16,6 +18,7 @@ const useAuth = () => {
 
   return {
     ...auth,
+    isUser,
     isMerchant,
     isAdmin,
     isApprovedMerchant,

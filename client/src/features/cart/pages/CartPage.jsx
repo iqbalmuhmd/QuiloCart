@@ -1,10 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { updateCartItem, removeCartItem, clearError } from "../cartSlice";
 
 const CartPage = () => {
-  const { toast } = useToast();
   const dispatch = useDispatch();
 
   const { items, totalAmount, loading, error } = useSelector(

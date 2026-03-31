@@ -19,10 +19,10 @@ import ProfilePage from "@/features/user/pages/ProfilePage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
+import UserRoute from "@/routes/UserRoute";
 import EditProductPage from "@/features/merchant/pages/EditProductPage";
 import AddressPage from "@/features/user/pages/AddressPage";
 import WishlistPage from "@/features/wishlist/pages/WishlistPage";
-import { Rotate3D } from "lucide-react";
 import CartPage from "@/features/cart/pages/CartPage";
 
 const AppRouter = () => {
@@ -101,12 +101,27 @@ const AppRouter = () => {
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
 
-        <Route path="/profile" element={<UserLayout />}>
+        <Route
+          path="/profile"
+          element={
+            <UserRoute>
+              <UserLayout />
+            </UserRoute>
+          }
+        >
           <Route index element={<ProfilePage />} />
           <Route path="addresses" element={<AddressPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
         </Route>
-        <Route path="/cart" element={<CartPage />} />
+
+        <Route
+          path="/cart"
+          element={
+            <UserRoute>
+              <CartPage />
+            </UserRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

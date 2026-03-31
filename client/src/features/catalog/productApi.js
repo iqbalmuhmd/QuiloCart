@@ -11,7 +11,6 @@ const getProducts = async (params = {}) => {
   });
 
   const data = response.data.data;
-  console.log("API response:", data);
 
   return {
     products: data.products,
