@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import orderApi from "../orderApi";
-import addressApi from "@/features/user/addressApi";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { clearCart } from "@/features/cart/cartSlice";
-import { Link } from "react-router-dom";
+import orderApi from "../orderApi";
+import useCheckout from "@/hooks/useCheckout";
+import useAddresses from "@/hooks/useAddresses";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -14,115 +14,22 @@ const CheckoutPage = () => {
   const dispatch = useDispatch();
 
   const { items, totalAmount } = useSelector((state) => state.cart);
-
-  const [checkoutSummary, setCheckoutSummary] = useState(null);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState(null);
-
-  const [addresses, setAddresses] = useState([]);
-  const [addressLoading, setAddressLoading] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const { checkoutSummary, checkoutLoading, checkoutError } = useCheckout();
+  const {
+    addresses,
+    addressLoading,
+    selectedAddressId,
+    setSelectedAddressId,
+    showAddressForm,
+    setShowAddressForm,
+    addressForm,
+    handleAddressFormChange,
+    handleAddressFormSubmit,
+    savingAddress,
+  } = useAddresses();
 
   const [placingOrder, setPlacingOrder] = useState(false);
   const [addressError, setAddressError] = useState(null);
-
-  useEffect(() => {
-    const runCheckout = async () => {
-      try {
-        setCheckoutLoading(true);
-        setCheckoutError(null);
-        const summary = await orderApi.checkout();
-        setCheckoutSummary(summary);
-      } catch (err) {
-        setCheckoutError(
-          err.response?.data?.message ||
-            "Something went wrong. Please try again.",
-        );
-      } finally {
-        setCheckoutLoading(false);
-      }
-    };
-
-    runCheckout();
-  }, []);
-
-  useEffect(() => {
-    const loadAddresses = async () => {
-      try {
-        setAddressLoading(true);
-        const data = await addressApi.getAddresses();
-        setAddresses(data.addresses);
-
-        const defaultAddress =
-          data.addresses.find((a) => a.isDefault) || data.addresses[0];
-
-        if (defaultAddress) {
-          setSelectedAddressId(defaultAddress._id);
-        }
-      } catch (err) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to load addresses",
-        });
-      } finally {
-        setAddressLoading(false);
-      }
-    };
-
-    loadAddresses();
-  }, []);
-
-  const [showAddressForm, setShowAddressForm] = useState(false);
-  const [addressForm, setAddressForm] = useState({
-    name: "",
-    phone: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-    isDefault: false,
-  });
-  const [savingAddress, setSavingAddress] = useState(false);
-
-  const handleAddressFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setAddressForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleAddressFormSubmit = async (e) => {
-    try {
-      setSavingAddress(true);
-      const created = await addressApi.createAddress(addressForm);
-      setAddresses((prev) => [...prev, created]);
-      setSelectedAddressId(created._id);
-      setShowAddressForm(false);
-      setAddressForm({
-        name: "",
-        phone: "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "",
-        isDefault: false,
-      });
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to save address",
-      });
-    } finally {
-      setSavingAddress(false);
-    }
-  };
 
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) {
