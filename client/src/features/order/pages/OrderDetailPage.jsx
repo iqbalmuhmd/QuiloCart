@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import orderApi from "../orderApi";
 import { useParams, Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 const OrderDetailPage = () => {
   const { id } = useParams();
@@ -8,6 +10,8 @@ const OrderDetailPage = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     const loadOrder = async () => {
@@ -24,6 +28,27 @@ const OrderDetailPage = () => {
 
     loadOrder();
   }, [id]);
+
+  const handleCancel = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this order?",
+    );
+    if (!confirmed) return;
+
+    try {
+      setCancelling(true);
+      const updated = await orderApi.cancelOrder(order.id);
+      setOrder(updated);
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err.response?.data?.message || "Failed to cancel order",
+      });
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const statusStyles = {
     CREATED: "bg-blue-50 text-blue-700",
@@ -71,13 +96,25 @@ const OrderDetailPage = () => {
             })}
           </p>
         </div>
-        <span
-          className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-            statusStyles[order.status] || "bg-gray-100 text-gray-600"
-          }`}
-        >
-          {order.status}
-        </span>
+        <div className="flex items-center gap-3">
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+              statusStyles[order.status] || "bg-gray-100 text-gray-600"
+            }`}
+          >
+            {order.status}
+          </span>
+          {order.status === "CREATED" && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleCancel}
+              disabled={cancelling}
+            >
+              {cancelling ? "Cancelling..." : "Cancel order"}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Order Items */}
