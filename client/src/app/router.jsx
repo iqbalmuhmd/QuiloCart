@@ -24,6 +24,7 @@ import EditProductPage from "@/features/merchant/pages/EditProductPage";
 import AddressPage from "@/features/user/pages/AddressPage";
 import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 import CartPage from "@/features/cart/pages/CartPage";
+import CheckoutPage from "@/features/order/pages/CheckoutPage"
 
 const AppRouter = () => {
   return (
@@ -119,6 +120,15 @@ const AppRouter = () => {
           element={
             <UserRoute>
               <CartPage />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <UserRoute>
+              <CheckoutPage />
             </UserRoute>
           }
         />

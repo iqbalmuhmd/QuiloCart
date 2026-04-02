@@ -23,7 +23,7 @@ export const createAddress = async (addressData) => {
 
 export const updateAddress = async (id, addressData) => {
   const response = await apiClient.patch(
-    ADDRESS_ROUTES.ADDRESS_BY_ID,
+    ADDRESS_ROUTES.ADDRESS_BY_ID(id),
     addressData,
   );
 

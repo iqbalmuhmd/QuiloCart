@@ -7,10 +7,8 @@ const ORDER_ROUTES = {
   CANCEL: (id) => `/orders/${id}/cancel`,
 };
 
-export const checkout = async (addressId) => {
-  const response = await apiClient.post(ORDER_ROUTES.CHECKOUT, {
-    addressId,
-  });
+export const checkout = async () => {
+  const response = await apiClient.post(ORDER_ROUTES.CHECKOUT);
 
   const data = response.data.data;
 

@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { updateCartItem, removeCartItem, clearError } from "../cartSlice";
 
 const CartPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { items, totalAmount, loading, error } = useSelector(
     (state) => state.cart,
@@ -135,6 +137,7 @@ const CartPage = () => {
 
             <button
               disabled={items.length === 0 || loading}
+              onClick={() => navigate("/checkout")}
               className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
             >
               {loading ? "Processing..." : "Checkout"}
