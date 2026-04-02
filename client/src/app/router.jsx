@@ -16,6 +16,8 @@ import ShopPage from "@/features/catalog/pages/ShopPage";
 import ProductDetailPage from "@/features/catalog/pages/ProductDetailPage";
 import UserLayout from "@/features/user/layout/UserLayout";
 import ProfilePage from "@/features/user/pages/ProfilePage";
+import OrdersPage from "@/features/order/pages/OrdersPage";
+import OrderDetailPage from "@/features/order/pages/OrderDetailPage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
@@ -24,7 +26,7 @@ import EditProductPage from "@/features/merchant/pages/EditProductPage";
 import AddressPage from "@/features/user/pages/AddressPage";
 import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 import CartPage from "@/features/cart/pages/CartPage";
-import CheckoutPage from "@/features/order/pages/CheckoutPage"
+import CheckoutPage from "@/features/order/pages/CheckoutPage";
 
 const AppRouter = () => {
   return (
@@ -113,6 +115,8 @@ const AppRouter = () => {
           <Route index element={<ProfilePage />} />
           <Route path="addresses" element={<AddressPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders/:id" element={<OrderDetailPage />} />
         </Route>
 
         <Route

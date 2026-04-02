@@ -34,7 +34,6 @@ const UserLayout = () => {
             Addresses
           </NavLink>
 
-          {/* Future */}
           <NavLink
             to="/profile/wishlist"
             className={({ isActive }) =>
@@ -46,6 +45,19 @@ const UserLayout = () => {
             }
           >
             Wishlist
+          </NavLink>
+
+          <NavLink
+            to="/profile/orders"
+            className={({ isActive }) =>
+              `px-3 py-2 rounded-md text-sm transition ${
+                isActive
+                  ? "bg-primary text-white"
+                  : "hover:bg-muted text-muted-foreground"
+              }`
+            }
+          >
+            Orders
           </NavLink>
         </nav>
       </aside>
