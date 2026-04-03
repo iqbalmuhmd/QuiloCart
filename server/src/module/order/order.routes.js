@@ -9,17 +9,13 @@ import {
   getOrderById,
   cancelOrder,
 } from "./order.controller";
-import {
-  checkoutValidator,
-  placeOrderValidator,
-  orderIdValidator,
-} from "./order.validator";
+import { placeOrderValidator, orderIdValidator } from "./order.validator";
 
 const router = express.Router();
 
 const userOnly = [authMiddleware, roleMiddleware(USER_ROLES.USER)];
 
-router.post("/checkout", ...userOnly, ...checkoutValidator, checkout);
+router.post("/checkout", ...userOnly, checkout);
 
 router
   .route("/")

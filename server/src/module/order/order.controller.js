@@ -10,15 +10,7 @@ import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
 
 export const checkout = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    throw new ApiError(400, errors.array()[0].msg);
-  }
-
-  const { addressId } = req.body;
-
-  const result = await checkoutService(req.user.userId, addressId);
+  const result = await checkoutService(req.user.userId);
 
   res
     .status(200)
@@ -74,9 +66,9 @@ export const cancelOrder = async (req, res) => {
 
   const { id } = req.params;
 
-  await cancelOrderService(req.user.userId, id);
+  const order = await cancelOrderService(req.user.userId, id);
 
   res
     .status(200)
-    .json(new ApiResponse(200, "Order cancelled successfully", null));
+    .json(new ApiResponse(200, "Order cancelled successfully", order));
 };

@@ -1,11 +1,21 @@
 import mongoose from "mongoose";
-import { ORDER_STATUS } from "@/utils/constants";
+import {
+  ORDER_STATUS,
+  PAYMENT_METHOD,
+  PAYMENT_STATUS,
+} from "@/utils/constants";
 
 const orderItemSchema = new mongoose.Schema(
   {
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
+      required: true,
+    },
+
+    merchantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Merchant",
       required: true,
     },
 
@@ -79,6 +89,33 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(ORDER_STATUS),
       default: ORDER_STATUS.CREATED,
+    },
+
+    paymentMethod: {
+      type: String,
+      enum: Object.values(PAYMENT_METHOD),
+      required: true,
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: Object.values(PAYMENT_STATUS),
+      default: PAYMENT_STATUS.PENDING,
+    },
+
+    razorpayOrderId: {
+      type: String,
+      default: null,
+    },
+
+    razorpayPaymentId: {
+      type: String,
+      default: null,
+    },
+
+    isSettled: {
+      type: Boolean,
+      default: false,
     },
   },
   {

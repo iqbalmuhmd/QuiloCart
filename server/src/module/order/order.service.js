@@ -4,8 +4,10 @@ import Product from "@/module/product/product.model";
 import Order from "./order.model";
 import { ApiError } from "@/utils/ApiError";
 import { withTransaction } from "@/utils/withTransaction";
+import { formatOrder, formatOrderDetail } from "./order.utils.js";
+import { ORDER_STATUS } from "@/utils/constants";
 
-export const checkoutService = async (userId, addressId) => {
+export const checkoutService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
     path: "items.productId",
     select: "name price images isActive stock",
@@ -58,24 +60,11 @@ export const checkoutService = async (userId, addressId) => {
     });
   }
 
-  const user = await User.findById(userId).select("addresses");
-
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
-
-  const address = user.addresses.id(addressId);
-
-  if (!address) {
-    throw new ApiError(404, "Address not found");
-  }
-
   return {
     items: validatedItems,
     totalItems: validatedItems.length,
     totalQuantity,
     totalAmount,
-    address,
   };
 };
 
@@ -192,14 +181,14 @@ export const placeOrderService = async (userId, addressId) => {
     cart.items = [];
     await cart.save({ session });
 
-    return order;
+    return formatOrderDetail(order);
   });
 };
 
 export const getOrdersService = async (userId) => {
   const orders = await Order.find({ userId }).sort({ createdAt: -1 });
 
-  return orders;
+  return orders.map(formatOrder);
 };
 
 export const getOrderByIdService = async (userId, orderId) => {
@@ -208,11 +197,9 @@ export const getOrderByIdService = async (userId, orderId) => {
     userId,
   });
 
-  if (!order) {
-    throw new ApiError(404, "Order not found");
-  }
+  if (!order) throw new ApiError(404, "Order not found");
 
-  return order;
+  return formatOrderDetail(order);
 };
 
 export const cancelOrderService = async (userId, orderId) => {
@@ -244,6 +231,6 @@ export const cancelOrderService = async (userId, orderId) => {
     order.status = ORDER_STATUS.CANCELLED;
     await order.save({ session });
 
-    return order;
+    return formatOrderDetail(order);
   });
 };

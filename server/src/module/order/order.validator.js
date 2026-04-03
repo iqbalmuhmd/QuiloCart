@@ -1,13 +1,5 @@
 import { param, body } from "express-validator";
 
-export const checkoutValidator = [
-  body("addressId")
-    .notEmpty()
-    .withMessage("Address ID is required")
-    .isMongoId()
-    .withMessage("Invalid address ID"),
-];
-
 export const placeOrderValidator = [
   body("addressId")
     .notEmpty()
