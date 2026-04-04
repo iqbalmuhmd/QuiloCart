@@ -9,6 +9,14 @@ if (!process.env.MONGO_URI) {
   throw new Error("MONGO_URI is missing in environment variables");
 }
 
+if (!process.env.RAZORPAY_KEY_ID) {
+  throw new Error("RAZORPAY_KEY_ID is missing in environment variables");
+}
+
+if (!process.env.RAZORPAY_KEY_SECRET) {
+  throw new Error("RAZORPAY_KEY_SECRET is missing in environment variables");
+}
+
 export const config = {
   port: process.env.PORT || 5000,
   db: {
@@ -16,6 +24,10 @@ export const config = {
   },
   jwt: {
     secret: process.env.JWT_SECRET,
+  },
+  razorpay: {
+    keyId: process.env.RAZORPAY_KEY_ID,
+    keySecret: process.env.RAZORPAY_KEY_SECRET,
   },
   clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
 };
