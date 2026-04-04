@@ -6,6 +6,7 @@ import { ApiError } from "@/utils/ApiError";
 import { withTransaction } from "@/utils/withTransaction";
 import { formatOrder, formatOrderDetail } from "./order.utils.js";
 import { ORDER_STATUS } from "@/utils/constants";
+import { PAYMENT_STATUS } from "@/utils/constants";
 
 export const checkoutService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
@@ -68,12 +69,12 @@ export const checkoutService = async (userId) => {
   };
 };
 
-export const placeOrderService = async (userId, addressId) => {
+export const placeOrderService = async (userId, addressId, paymentMethod) => {
   return withTransaction(async (session) => {
     const cart = await Cart.findOne({ userId })
       .populate({
         path: "items.productId",
-        select: "name price images isActive stock",
+        select: "name price images isActive stock merchantId",
       })
       .session(session);
 
@@ -115,6 +116,7 @@ export const placeOrderService = async (userId, addressId) => {
 
       orderItems.push({
         productId: product._id,
+        merchantId: product.merchantId,
         name: product.name,
         price: product.price,
         image: product.images?.[0] || null,
@@ -143,6 +145,11 @@ export const placeOrderService = async (userId, addressId) => {
           items: orderItems,
           totalAmount,
           totalQuantity,
+          paymentMethod,
+          paymentStatus:
+            paymentMethod === PAYMENT_METHOD.COD
+              ? PAYMENT_STATUS.COD
+              : PAYMENT_STATUS.PENDING,
           addressSnapshot: {
             name: address.name,
             phone: address.phone,
@@ -186,7 +193,10 @@ export const placeOrderService = async (userId, addressId) => {
 };
 
 export const getOrdersService = async (userId) => {
-  const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+  const orders = await Order.find({
+    userId,
+    paymentStatus: { $ne: PAYMENT_STATUS.PENDING },
+  }).sort({ createdAt: -1 });
 
   return orders.map(formatOrder);
 };

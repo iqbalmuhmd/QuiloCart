@@ -24,9 +24,13 @@ export const placeOrder = async (req, res) => {
     throw new ApiError(400, errors.array()[0].msg);
   }
 
-  const { addressId } = req.body;
+  const { addressId, paymentMethod } = req.body;
 
-  const order = await placeOrderService(req.user.userId, addressId);
+  const order = await placeOrderService(
+    req.user.userId,
+    addressId,
+    paymentMethod,
+  );
 
   res
     .status(201)
