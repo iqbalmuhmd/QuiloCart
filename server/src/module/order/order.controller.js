@@ -4,6 +4,7 @@ import {
   placeOrderService,
   initiatePaymentService,
   verifyPaymentService,
+  updateOrderStatusService,
   getOrdersService,
   getOrderByIdService,
   cancelOrderService,
@@ -65,6 +66,21 @@ export const verifyPayment = async (req, res) => {
   const result = await verifyPaymentService(req.user.userId, id, req.body);
 
   res.status(200).json(new ApiResponse(200, "Payment verified", result));
+};
+
+export const updateOrderStatus = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, errors.array()[0].msg);
+  }
+
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const result = await updateOrderStatusService(id, status, req.merchant._id);
+
+  res.status(200).json(new ApiResponse(200, "Order status updated", result));
 };
 
 export const getOrders = async (req, res) => {
