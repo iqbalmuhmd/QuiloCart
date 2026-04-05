@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { TRANSACTION_TYPE } from "@/utils/constants";
 
 const transactionSchema = new mongoose.Schema(
   {
@@ -10,7 +11,7 @@ const transactionSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["CREDIT", "DEBIT"],
+      enum: Object.values(TRANSACTION_TYPE),
       required: true,
     },
 

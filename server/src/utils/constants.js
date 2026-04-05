@@ -33,3 +33,8 @@ export const PAYMENT_METHOD = {
   ONLINE: "ONLINE",
   WALLET: "WALLET",
 };
+
+export const TRANSACTION_TYPE = {
+  CREDIT: "CREDIT",
+  DEBIT: "DEBIT",
+};
