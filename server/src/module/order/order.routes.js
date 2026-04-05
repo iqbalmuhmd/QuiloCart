@@ -5,6 +5,7 @@ import { USER_ROLES } from "@/utils/constants";
 import {
   checkout,
   placeOrder,
+  initiatePayment,
   getOrders,
   getOrderById,
   cancelOrder,
@@ -21,6 +22,8 @@ router
   .route("/")
   .get(...userOnly, getOrders)
   .post(...userOnly, ...placeOrderValidator, placeOrder);
+
+router.post("/:id/pay", ...userOnly, ...orderIdValidator, initiatePayment);
 
 router.get("/:id", ...userOnly, ...orderIdValidator, getOrderById);
 

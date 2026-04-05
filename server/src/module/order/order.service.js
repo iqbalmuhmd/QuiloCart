@@ -7,6 +7,7 @@ import { withTransaction } from "@/utils/withTransaction";
 import { formatOrder, formatOrderDetail } from "./order.utils.js";
 import { ORDER_STATUS } from "@/utils/constants";
 import { PAYMENT_STATUS } from "@/utils/constants";
+import { razorpayInstance } from "@/config/razorpay";
 
 export const checkoutService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
@@ -190,6 +191,49 @@ export const placeOrderService = async (userId, addressId, paymentMethod) => {
 
     return formatOrderDetail(order);
   });
+};
+
+export const initiatePaymentService = async (userId, orderId) => {
+  const order = await Order.findOne({ _id: orderId, userId });
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  if (order.paymentStatus !== PAYMENT_STATUS.PENDING) {
+    throw new ApiError(400, "Payment cannot be initiated for this order");
+  }
+
+  if (order.status !== ORDER_STATUS.CREATED) {
+    throw new ApiError(400, "Order is no longer active");
+  }
+
+  if (order.razorpayOrderId) {
+    return {
+      razorpayOrderId: order.razorpayOrderId,
+      amount: order.totalAmount,
+      currency: "INR",
+      orderId: order._id,
+      keyId: config.razorpay.keyId,
+    };
+  }
+
+  const razorpayOrder = await razorpayInstance.orders.create({
+    amount: Math.round(order.totalAmount * 100),
+    currency: "INR",
+    receipt: order._id.toString(),
+  });
+
+  order.razorpayOrderId = razorpayOrder.id;
+  await order.save();
+
+  return {
+    razorpayOrderId: razorpayOrder.id,
+    amount: order.totalAmount,
+    currency: "INR",
+    orderId: order._id,
+    keyId: config.razorpay.keyId,
+  };
 };
 
 export const getOrdersService = async (userId) => {

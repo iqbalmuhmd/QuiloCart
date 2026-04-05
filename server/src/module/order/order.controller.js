@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import {
   checkoutService,
   placeOrderService,
+  initiatePaymentService,
   getOrdersService,
   getOrderByIdService,
   cancelOrderService,
@@ -35,6 +36,20 @@ export const placeOrder = async (req, res) => {
   res
     .status(201)
     .json(new ApiResponse(201, "Order placed successfully", order));
+};
+
+export const initiatePayment = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, errors.array()[0].msg);
+  }
+
+  const { id } = req.params;
+
+  const result = await initiatePaymentService(req.user.userId, id);
+
+  res.status(200).json(new ApiResponse(200, "Payment initiated", result));
 };
 
 export const getOrders = async (req, res) => {
