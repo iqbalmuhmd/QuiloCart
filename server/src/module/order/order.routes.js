@@ -6,6 +6,7 @@ import {
   checkout,
   placeOrder,
   initiatePayment,
+  verifyPayment,
   getOrders,
   getOrderById,
   cancelOrder,
@@ -24,6 +25,8 @@ router
   .post(...userOnly, ...placeOrderValidator, placeOrder);
 
 router.post("/:id/pay", ...userOnly, ...orderIdValidator, initiatePayment);
+
+router.post("/:id/verify", ...userOnly, ...orderIdValidator, verifyPayment);
 
 router.get("/:id", ...userOnly, ...orderIdValidator, getOrderById);
 

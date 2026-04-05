@@ -8,6 +8,7 @@ import { formatOrder, formatOrderDetail } from "./order.utils.js";
 import { ORDER_STATUS } from "@/utils/constants";
 import { PAYMENT_STATUS } from "@/utils/constants";
 import { razorpayInstance } from "@/config/razorpay";
+import { verifyRazorpaySignature } from "@/utils/razorpay";
 
 export const checkoutService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
@@ -234,6 +235,52 @@ export const initiatePaymentService = async (userId, orderId) => {
     orderId: order._id,
     keyId: config.razorpay.keyId,
   };
+};
+
+export const verifyPaymentService = async (userId, orderId, paymentData) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    paymentData;
+
+  const order = await Order.findOne({ _id: orderId, userId });
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  if (order.razorpayOrderId !== razorpay_order_id) {
+    throw new ApiError(400, "Order ID mismatch");
+  }
+
+  if (order.paymentStatus === PAYMENT_STATUS.PAID) {
+    return formatOrderDetail(order);
+  }
+
+  if (order.paymentStatus !== PAYMENT_STATUS.PENDING) {
+    throw new ApiError(400, "Payment cannot be verified for this order");
+  }
+
+  if (order.status === ORDER_STATUS.CANCELLED) {
+    throw new ApiError(400, "Order has been cancelled");
+  }
+
+  const isValid = verifyRazorpaySignature(
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+    config.razorpay.keySecret,
+  );
+
+  if (!isValid) {
+    order.paymentStatus = PAYMENT_STATUS.FAILED;
+    await order.save();
+    throw new ApiError(400, "Payment verification failed");
+  }
+
+  order.paymentStatus = PAYMENT_STATUS.PAID;
+  order.razorpayPaymentId = razorpay_payment_id;
+  await order.save();
+
+  return formatOrderDetail(order);
 };
 
 export const getOrdersService = async (userId) => {
