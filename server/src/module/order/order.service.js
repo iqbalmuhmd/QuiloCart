@@ -7,8 +7,11 @@ import { withTransaction } from "@/utils/withTransaction";
 import { formatOrder, formatOrderDetail } from "./order.utils.js";
 import { ORDER_STATUS } from "@/utils/constants";
 import { PAYMENT_STATUS } from "@/utils/constants";
+import { PAYMENT_METHOD } from "@/utils/constants";
+import { config } from "@/config/env";
 import { razorpayInstance } from "@/config/razorpay";
 import { verifyRazorpaySignature } from "@/utils/razorpay";
+import { settleOrder } from "@/module/wallet/settlement.service";
 
 export const checkoutService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
@@ -297,47 +300,53 @@ export const updateOrderStatusService = async (
   newStatus,
   merchantId,
 ) => {
-  const order = await Order.findById(orderId);
+  return withTransaction(async (session) => {
+    const order = await Order.findById(orderId).session(session);
 
-  if (!order) {
-    throw new ApiError(404, "Order not found");
-  }
-
-  const isMerchantOrder = order.items.some(
-    (item) => item.merchantId.toString() === merchantId.toString(),
-  );
-
-  if (!isMerchantOrder) {
-    throw new ApiError(403, "You are not authorized to update this order");
-  }
-
-  const VALID_TRANSITIONS = {
-    [ORDER_STATUS.CREATED]: ORDER_STATUS.CONFIRMED,
-    [ORDER_STATUS.CONFIRMED]: ORDER_STATUS.SHIPPED,
-    [ORDER_STATUS.SHIPPED]: ORDER_STATUS.DELIVERED,
-  };
-
-  if (VALID_TRANSITIONS[order.status] !== newStatus) {
-    throw new ApiError(
-      400,
-      `Cannot transition from ${order.status} to ${newStatus}`,
-    );
-  }
-
-  if (newStatus === ORDER_STATUS.CONFIRMED) {
-    const paymentOk =
-      order.paymentStatus === PAYMENT_STATUS.PAID ||
-      order.paymentStatus === PAYMENT_STATUS.COD;
-
-    if (!paymentOk) {
-      throw new ApiError(400, "Cannot confirm order — payment not completed");
+    if (!order) {
+      throw new ApiError(404, "Order not found");
     }
-  }
 
-  order.status = newStatus;
-  await order.save();
+    const isMerchantOrder = order.items.some(
+      (item) => item.merchantId.toString() === merchantId.toString(),
+    );
 
-  return formatOrderDetail(order);
+    if (!isMerchantOrder) {
+      throw new ApiError(403, "You are not authorized to update this order");
+    }
+
+    const VALID_TRANSITIONS = {
+      [ORDER_STATUS.CREATED]: ORDER_STATUS.CONFIRMED,
+      [ORDER_STATUS.CONFIRMED]: ORDER_STATUS.SHIPPED,
+      [ORDER_STATUS.SHIPPED]: ORDER_STATUS.DELIVERED,
+    };
+
+    if (VALID_TRANSITIONS[order.status] !== newStatus) {
+      throw new ApiError(
+        400,
+        `Cannot transition from ${order.status} to ${newStatus}`,
+      );
+    }
+
+    if (newStatus === ORDER_STATUS.CONFIRMED) {
+      const paymentOk =
+        order.paymentStatus === PAYMENT_STATUS.PAID ||
+        order.paymentStatus === PAYMENT_STATUS.COD;
+
+      if (!paymentOk) {
+        throw new ApiError(400, "Cannot confirm order — payment not completed");
+      }
+    }
+
+    order.status = newStatus;
+    await order.save({ session });
+
+    if (newStatus === ORDER_STATUS.DELIVERED) {
+      await settleOrder(order, session);
+    }
+
+    return formatOrderDetail(order);
+  });
 };
 
 export const getOrderByIdService = async (userId, orderId) => {
