@@ -12,6 +12,7 @@ import { config } from "@/config/env";
 import { razorpayInstance } from "@/config/razorpay";
 import { verifyRazorpaySignature } from "@/utils/razorpay";
 import { settleOrder } from "@/module/wallet/settlement.service";
+import { creditWallet } from "@/module/wallet/wallet.service";
 
 export const checkoutService = async (userId) => {
   const cart = await Cart.findOne({ userId }).populate({
@@ -370,8 +371,22 @@ export const cancelOrderService = async (userId, orderId) => {
       throw new ApiError(404, "Order not found");
     }
 
-    if (order.status !== ORDER_STATUS.CREATED) {
-      throw new ApiError(400, "Order cannot be cancelled");
+    if (
+      order.status === ORDER_STATUS.SHIPPED ||
+      order.status === ORDER_STATUS.DELIVERED
+    ) {
+      throw new ApiError(400, "Order cannot be cancelled at this stage");
+    }
+
+    if (order.status === ORDER_STATUS.CANCELLED) {
+      throw new ApiError(400, "Order is already cancelled");
+    }
+
+    if (
+      order.paymentStatus === PAYMENT_STATUS.REFUNDED ||
+      order.paymentStatus === PAYMENT_STATUS.FAILED
+    ) {
+      throw new ApiError(400, "Order has already been processed");
     }
 
     for (const item of order.items) {
@@ -387,6 +402,20 @@ export const cancelOrderService = async (userId, orderId) => {
     }
 
     order.status = ORDER_STATUS.CANCELLED;
+
+    if (order.paymentStatus === PAYMENT_STATUS.PAID) {
+      await creditWallet(
+        userId,
+        order.totalAmount,
+        order._id,
+        `Refund for cancelled order #${order._id}`,
+        session,
+      );
+      order.paymentStatus = PAYMENT_STATUS.REFUNDED;
+    } else if (order.paymentStatus === PAYMENT_STATUS.PENDING) {
+      order.paymentStatus = PAYMENT_STATUS.FAILED;
+    }
+
     await order.save({ session });
 
     return formatOrderDetail(order);
