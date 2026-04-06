@@ -72,3 +72,48 @@ export const debitWallet = async (
 
   return wallet;
 };
+
+export const getWalletService = async (userId) => {
+  const wallet = await Wallet.findOne({ userId });
+
+  if (!wallet) {
+    return { balance: 0 };
+  }
+
+  return { balance: wallet.balance };
+};
+
+export const getWalletTransactionsService = async (
+  userId,
+  page = 1,
+  limit = 10,
+) => {
+  const wallet = await Wallet.findOne({ userId });
+
+  if (!wallet) {
+    return { transactions: [], total: 0, page, limit };
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [transactions, total] = await Promise.all([
+    Transaction.find({ walletId: wallet._id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    Transaction.countDocuments({ walletId: wallet._id }),
+  ]);
+
+  return {
+    transactions: transactions.map((t) => ({
+      type: t.type,
+      amount: t.amount,
+      description: t.description,
+      orderId: t.orderId,
+      createdAt: t.createdAt,
+    })),
+    total,
+    page,
+    limit,
+  };
+};
