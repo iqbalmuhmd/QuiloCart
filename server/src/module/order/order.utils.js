@@ -1,6 +1,7 @@
 export const formatOrder = (order) => ({
   id: order._id,
   status: order.status,
+  paymentStatus: order.paymentStatus,
   totalAmount: order.totalAmount,
   totalQuantity: order.totalQuantity,
   createdAt: order.createdAt,
@@ -10,6 +11,9 @@ export const formatOrder = (order) => ({
 export const formatOrderDetail = (order) => ({
   id: order._id,
   status: order.status,
+  paymentStatus: order.paymentStatus,
+  paymentMethod: order.paymentMethod,
+  razorpayPaymentId: order.razorpayPaymentId || null,
   totalAmount: order.totalAmount,
   totalQuantity: order.totalQuantity,
   createdAt: order.createdAt,

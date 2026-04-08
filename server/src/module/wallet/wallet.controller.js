@@ -3,8 +3,6 @@ import {
   getWalletTransactionsService,
 } from "./wallet.service";
 import { ApiResponse } from "@/utils/ApiResponse";
-import { ApiError } from "@/utils/ApiError";
-import { validationResult } from "express-validator";
 
 export const getWallet = async (req, res) => {
   const result = await getWalletService(req.user.userId);

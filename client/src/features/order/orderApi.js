@@ -5,6 +5,8 @@ const ORDER_ROUTES = {
   ORDERS: "/orders",
   ORDER: (id) => `/orders/${id}`,
   CANCEL: (id) => `/orders/${id}/cancel`,
+  PAY: (id) => `/orders/${id}/pay`,
+  VERIFY: (id) => `/orders/${id}/verify`,
 };
 
 export const checkout = async () => {
@@ -21,10 +23,26 @@ export const checkout = async () => {
   };
 };
 
-export const placeOrder = async (addressId) => {
+export const placeOrder = async (addressId, paymentMethod) => {
   const response = await apiClient.post(ORDER_ROUTES.ORDERS, {
     addressId,
+    paymentMethod,
   });
+
+  return response.data.data;
+};
+
+export const initiatePayment = async (orderId) => {
+  const response = await apiClient.post(ORDER_ROUTES.PAY(orderId));
+
+  return response.data.data;
+};
+
+export const verifyPayment = async (orderId, paymentData) => {
+  const response = await apiClient.post(
+    ORDER_ROUTES.VERIFY(orderId),
+    paymentData,
+  );
 
   return response.data.data;
 };
