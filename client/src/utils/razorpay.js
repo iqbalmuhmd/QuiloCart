@@ -1,3 +1,26 @@
+let razorpayScriptPromise = null;
+
+export const loadRazorpayScript = () => {
+  if (razorpayScriptPromise) return razorpayScriptPromise;
+
+  razorpayScriptPromise = new Promise((resolve, reject) => {
+    if (document.getElementById("razorpay-script")) {
+      return resolve();
+    }
+
+    const script = document.createElement("script");
+    script.id = "razorpay-script";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load Razorpay SDK"));
+
+    document.body.appendChild(script);
+  });
+
+  return razorpayScriptPromise;
+};
+
 export const openRazorpayCheckout = ({
   keyId,
   razorpayOrderId,
