@@ -3,6 +3,26 @@ import orderApi from "../orderApi";
 import { useParams, Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { ORDER_STATUS, PAYMENT_STATUS, PAYMENT_METHOD } from "@/constants";
+
+const statusStyles = {
+  [ORDER_STATUS.CREATED]: "bg-blue-50 text-blue-700",
+  [ORDER_STATUS.CONFIRMED]: "bg-purple-50 text-purple-700",
+  [ORDER_STATUS.SHIPPED]: "bg-yellow-50 text-yellow-700",
+  [ORDER_STATUS.DELIVERED]: "bg-green-50 text-green-700",
+  [ORDER_STATUS.CANCELLED]: "bg-red-50 text-red-700",
+};
+
+const paymentStatusStyles = {
+  [PAYMENT_STATUS.PAID]: "bg-green-50 text-green-700",
+  [PAYMENT_STATUS.COD]: "bg-gray-100 text-gray-600",
+  [PAYMENT_STATUS.PENDING]: "bg-yellow-50 text-yellow-700",
+  [PAYMENT_STATUS.FAILED]: "bg-red-50 text-red-700",
+  [PAYMENT_STATUS.REFUNDED]: "bg-blue-50 text-blue-700",
+};
+
+const canCancel = (status) =>
+  status === ORDER_STATUS.CREATED || status === ORDER_STATUS.CONFIRMED;
 
 const OrderDetailPage = () => {
   const { id } = useParams();
@@ -50,15 +70,6 @@ const OrderDetailPage = () => {
     }
   };
 
-  const statusStyles = {
-    CREATED: "bg-blue-50 text-blue-700",
-    SHIPPED: "bg-yellow-50 text-yellow-700",
-    DELIVERED: "bg-green-50 text-green-700",
-    CANCELLED: "bg-red-50 text-red-700",
-    RETURN_REQUESTED: "bg-orange-50 text-orange-700",
-    RETURNED: "bg-gray-100 text-gray-600",
-  };
-
   if (loading) {
     return <p className="p-6 text-muted-foreground">Loading...</p>;
   }
@@ -71,6 +82,15 @@ const OrderDetailPage = () => {
 
   return (
     <div className="space-y-6 max-w-3xl">
+      {/* Refund Banner */}
+      {order.paymentStatus === PAYMENT_STATUS.REFUNDED && (
+        <div className="border border-blue-200 bg-blue-50 text-blue-700 rounded-xl p-4">
+          <p className="text-sm font-medium">
+            ${order.totalAmount} has been refunded to your wallet
+          </p>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -96,7 +116,8 @@ const OrderDetailPage = () => {
             })}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-2">
           <span
             className={`text-xs px-2 py-0.5 rounded-full font-medium ${
               statusStyles[order.status] || "bg-gray-100 text-gray-600"
@@ -104,7 +125,17 @@ const OrderDetailPage = () => {
           >
             {order.status}
           </span>
-          {order.status === "CREATED" && (
+
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+              paymentStatusStyles[order.paymentStatus] ||
+              "bg-gray-100 text-gray-600"
+            }`}
+          >
+            {order.paymentStatus}
+          </span>
+
+          {canCancel(order.status) && (
             <Button
               variant="destructive"
               size="sm"
@@ -171,7 +202,28 @@ const OrderDetailPage = () => {
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
           Order summary
         </p>
+
         <div className="border border-gray-200 rounded-xl p-4 space-y-2">
+          {/* Payment method */}
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <p>Payment method</p>
+            <p>
+              {order.paymentMethod === PAYMENT_METHOD.COD
+                ? "Cash on delivery"
+                : "Online payment"}
+            </p>
+          </div>
+
+          {/* Payment ID */}
+          {order.paymentStatus === PAYMENT_STATUS.PAID &&
+            order.razorpayPaymentId && (
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <p>Payment ID</p>
+                <p className="font-mono text-xs">{order.razorpayPaymentId}</p>
+              </div>
+            )}
+
+          {/* Total quantity */}
           <div className="flex justify-between text-sm text-muted-foreground">
             <p>Total quantity</p>
             <p>
@@ -179,6 +231,8 @@ const OrderDetailPage = () => {
               {order.totalQuantity === 1 ? "item" : "items"}
             </p>
           </div>
+
+          {/* Total */}
           <div className="flex justify-between text-sm font-medium border-t border-gray-100 pt-2">
             <p>Total</p>
             <p>${order.totalAmount}</p>
