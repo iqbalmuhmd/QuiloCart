@@ -4,10 +4,12 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { clearCart } from "@/features/cart/cartSlice";
 import orderApi from "../orderApi";
+import { loadRazorpayScript, openRazorpayCheckout } from "@/utils/razorpay";
 import useCheckout from "@/hooks/useCheckout";
 import useAddresses from "@/hooks/useAddresses";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PAYMENT_METHOD } from "@/constants";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ const CheckoutPage = () => {
     savingAddress,
   } = useAddresses();
 
+  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.COD);
+
   const [placingOrder, setPlacingOrder] = useState(false);
   const [addressError, setAddressError] = useState(null);
 
@@ -41,10 +45,46 @@ const CheckoutPage = () => {
 
     try {
       setPlacingOrder(true);
-      const order = await orderApi.placeOrder(selectedAddressId);
+      const order = await orderApi.placeOrder(selectedAddressId, paymentMethod);
+
+      if (paymentMethod === PAYMENT_METHOD.COD) {
+        toast({
+          title: "Order placed",
+          description: "Your cash on delivery order has been confirmed.",
+        });
+        dispatch(clearCart());
+        navigate(`/profile/orders/${order.id}`);
+        return;
+      }
+
+      const paymentData = await orderApi.initiatePayment(order.id);
+
+      await loadRazorpayScript();
+
+      const razorpayResponse = await openRazorpayCheckout({
+        keyId: paymentData.keyId,
+        razorpayOrderId: paymentData.razorpayOrderId,
+        amount: paymentData.amount,
+        currency: paymentData.currency,
+      });
+
+      await orderApi.verifyPayment(order.id, razorpayResponse);
+
+      toast({
+        title: "Payment successful",
+        description: "Your order has been confirmed and paid online.",
+      });
       dispatch(clearCart());
-      navigate(`/orders/${order._id}`);
+      navigate(`/profile/orders/${order.id}`);
     } catch (err) {
+      if (err.message === "Payment cancelled") {
+        toast({
+          title: "Payment cancelled",
+          description: "Your order was not completed. You can try again.",
+        });
+        return;
+      }
+
       toast({
         variant: "destructive",
         title: "Order Failed",
@@ -250,12 +290,48 @@ const CheckoutPage = () => {
               </div>
             )}
 
+            {!checkoutError && (
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                  Payment method
+                </p>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div
+                    onClick={() => setPaymentMethod(PAYMENT_METHOD.COD)}
+                    className={`border rounded-xl p-4 cursor-pointer transition-colors ${
+                      paymentMethod === PAYMENT_METHOD.COD
+                        ? "border-black bg-gray-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    Cash on Delivery
+                  </div>
+
+                  <div
+                    onClick={() => setPaymentMethod(PAYMENT_METHOD.ONLINE)}
+                    className={`border rounded-xl p-4 cursor-pointer transition-colors ${
+                      paymentMethod === PAYMENT_METHOD.ONLINE
+                        ? "border-black bg-gray-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    Pay Online
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
               onClick={handlePlaceOrder}
               disabled={!!checkoutError || placingOrder || !checkoutSummary}
               className="w-full py-3 bg-black text-white text-sm font-medium rounded-lg disabled:opacity-40 mt-2"
             >
-              {placingOrder ? "Placing order..." : "Place order"}
+              {placingOrder
+                ? "Placing order..."
+                : paymentMethod === PAYMENT_METHOD.ONLINE
+                  ? "Place & pay"
+                  : "Place order"}
             </button>
           </div>
         </div>

@@ -68,6 +68,8 @@ export const cancelOrder = async (orderId) => {
 const orderApi = {
   checkout,
   placeOrder,
+  initiatePayment,
+  verifyPayment,
   getOrders,
   getOrderById,
   cancelOrder,
