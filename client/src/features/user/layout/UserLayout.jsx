@@ -59,6 +59,19 @@ const UserLayout = () => {
           >
             Orders
           </NavLink>
+
+          <NavLink
+            to="/profile/wallet"
+            className={({ isActive }) =>
+              `px-3 py-2 rounded-md text-sm transition ${
+                isActive
+                  ? "bg-primary text-white"
+                  : "hover:bg-muted text-muted-foreground"
+              }`
+            }
+          >
+            Wallet
+          </NavLink>
         </nav>
       </aside>
 

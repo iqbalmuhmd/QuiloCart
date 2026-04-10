@@ -18,6 +18,7 @@ import UserLayout from "@/features/user/layout/UserLayout";
 import ProfilePage from "@/features/user/pages/ProfilePage";
 import OrdersPage from "@/features/order/pages/OrdersPage";
 import OrderDetailPage from "@/features/order/pages/OrderDetailPage";
+import WalletPage from "@/features/wallet/pages/WalletPage";
 
 import GuestRoute from "@/routes/GuestRoute";
 import MerchantRoute from "@/routes/MerchantRoute";
@@ -115,6 +116,7 @@ const AppRouter = () => {
           <Route index element={<ProfilePage />} />
           <Route path="addresses" element={<AddressPage />} />
           <Route path="wishlist" element={<WishlistPage />} />
+          <Route path="wallet" element={<WalletPage />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="orders/:id" element={<OrderDetailPage />} />
         </Route>
