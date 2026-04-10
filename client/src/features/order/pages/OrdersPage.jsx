@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import orderApi from "../orderApi";
 import { Link } from "react-router-dom";
+import { statusStyles, paymentStatusStyles } from "@/utils/order.utils";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -61,15 +62,24 @@ const OrdersPage = () => {
                       {order.totalQuantity}{" "}
                       {order.totalQuantity === 1 ? "item" : "items"}
                     </p>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        order.status === "CREATED"
-                          ? "bg-green-50 text-green-700"
-                          : "bg-red-50 text-red-700"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          statusStyles[order.status] ||
+                          "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          paymentStatusStyles[order.paymentStatus] ||
+                          "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {order.paymentStatus}
+                      </span>
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     ${order.totalAmount}
