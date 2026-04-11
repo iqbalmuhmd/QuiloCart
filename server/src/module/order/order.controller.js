@@ -8,6 +8,8 @@ import {
   getOrdersService,
   getOrderByIdService,
   cancelOrderService,
+  getMerchantOrdersService,
+  getMerchantOrderByIdService,
 } from "./order.service";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
@@ -121,4 +123,28 @@ export const cancelOrder = async (req, res) => {
   res
     .status(200)
     .json(new ApiResponse(200, "Order cancelled successfully", order));
+};
+
+export const getMerchantOrders = async (req, res) => {
+  const orders = await getMerchantOrdersService(req.merchant._id);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Merchant orders fetched successfully", orders));
+};
+
+export const getMerchantOrderById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, errors.array()[0].msg);
+  }
+
+  const { id } = req.params;
+
+  const order = await getMerchantOrderByIdService(req.merchant._id, id);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Order fetched successfully", order));
 };

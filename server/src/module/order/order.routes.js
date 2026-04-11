@@ -12,6 +12,8 @@ import {
   getOrders,
   getOrderById,
   cancelOrder,
+  getMerchantOrders,
+  getMerchantOrderById,
 } from "./order.controller";
 import {
   placeOrderValidator,
@@ -30,6 +32,15 @@ router
   .route("/")
   .get(...userOnly, getOrders)
   .post(...userOnly, ...placeOrderValidator, placeOrder);
+
+router.get("/merchant", ...merchantOnly, getMerchantOrders);
+
+router.get(
+  "/merchant/:id",
+  ...merchantOnly,
+  ...orderIdValidator,
+  getMerchantOrderById,
+);
 
 router.post("/:id/pay", ...userOnly, ...orderIdValidator, initiatePayment);
 

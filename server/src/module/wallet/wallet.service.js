@@ -7,7 +7,7 @@ export const getOrCreateWallet = async (userId, session) => {
   const wallet = await Wallet.findOneAndUpdate(
     { userId },
     { $setOnInsert: { userId, balance: 0 } },
-    { upsert: true, new: true, session },
+    { upsert: true, returnDocument: "after", session },
   );
 
   return wallet;
