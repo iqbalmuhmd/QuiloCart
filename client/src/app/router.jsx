@@ -29,6 +29,7 @@ import WishlistPage from "@/features/wishlist/pages/WishlistPage";
 import CartPage from "@/features/cart/pages/CartPage";
 import CheckoutPage from "@/features/order/pages/CheckoutPage";
 import MerchantOrdersPage from "@/features/merchant/pages/MerchantOrdersPage";
+import MerchantOrderDetailPage from "@/features/merchant/pages/MerchantOrderDetailPage";
 
 const AppRouter = () => {
   return (
@@ -84,6 +85,7 @@ const AppRouter = () => {
           <Route path="products/create" element={<CreateProductPage />} />
           <Route path="products/:id/edit" element={<EditProductPage />} />
           <Route path="orders" element={<MerchantOrdersPage />} />
+          <Route path="orders/:id" element={<MerchantOrderDetailPage />} />
         </Route>
 
         <Route
