@@ -30,6 +30,7 @@ import CartPage from "@/features/cart/pages/CartPage";
 import CheckoutPage from "@/features/order/pages/CheckoutPage";
 import MerchantOrdersPage from "@/features/merchant/pages/MerchantOrdersPage";
 import MerchantOrderDetailPage from "@/features/merchant/pages/MerchantOrderDetailPage";
+import MerchantWalletPage from "@/features/merchant/pages/MerchantWalletPage";
 
 const AppRouter = () => {
   return (
@@ -86,6 +87,7 @@ const AppRouter = () => {
           <Route path="products/:id/edit" element={<EditProductPage />} />
           <Route path="orders" element={<MerchantOrdersPage />} />
           <Route path="orders/:id" element={<MerchantOrderDetailPage />} />
+          <Route path="wallet" element={<MerchantWalletPage />} />
         </Route>
 
         <Route
