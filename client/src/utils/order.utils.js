@@ -15,3 +15,9 @@ export const paymentStatusStyles = {
   [PAYMENT_STATUS.FAILED]: "bg-red-50 text-red-700",
   [PAYMENT_STATUS.REFUNDED]: "bg-blue-50 text-blue-700",
 };
+
+export const NEXT_TRANSITION = {
+  CREATED: { label: "Confirm", next: "CONFIRMED" },
+  CONFIRMED: { label: "Mark as Shipped", next: "SHIPPED" },
+  SHIPPED: { label: "Mark as Delivered", next: "DELIVERED" },
+};
