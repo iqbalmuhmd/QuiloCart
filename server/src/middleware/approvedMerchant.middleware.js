@@ -10,12 +10,15 @@ export const approvedMerchantMiddleware = async (req, res, next) => {
   }
 
   if (merchant.status !== MERCHANT_STATUS.APPROVED) {
-    return next(
-      new ApiError(403, "Merchant account is pending admin approval"),
-    );
+    const messages = {
+      [MERCHANT_STATUS.PENDING]: "Your application is under review",
+      [MERCHANT_STATUS.REJECTED]: "Your application was rejected",
+      [MERCHANT_STATUS.BLOCKED]: "Your account has been suspended",
+    };
+    return next(new ApiError(403, messages[merchant.status]));
   }
 
-  req.merchant = merchant
+  req.merchant = merchant;
 
   next();
 };
