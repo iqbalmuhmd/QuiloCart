@@ -89,23 +89,38 @@ export const getMerchantAnalyticsService = async (merchantId, period) => {
     { $sort: { _id: 1 } },
   ]);
 
+  const bestSellingProductResult = await Order.aggregate([
+    { $match: { status: "DELIVERED" } },
+    { $unwind: "$items" },
+    {
+      $match: {
+        "items.merchantId": new mongoose.Types.ObjectId(merchantId),
+      },
+    },
+    {
+      $group: {
+        _id: "$items.name",
+        unitsSold: { $sum: "$items.quantity" },
+      },
+    },
+    { $sort: { unitsSold: -1 } },
+    { $limit: 1 },
+    {
+      $project: {
+        _id: 0,
+        name: "$_id",
+        unitsSold: 1,
+      },
+    },
+  ]);
+
   const totalRevenue = chartData.reduce((sum, d) => sum + d.revenue, 0);
   const totalOrders = chartData.reduce((sum, d) => sum + d.orders.length, 0);
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-
-  const productMap = {};
-  for (const bucket of chartData) {
-    for (const product of bucket.products) {
-      productMap[product.name] =
-        (productMap[product.name] ?? 0) + product.quantity;
-    }
-  }
-
-  const bestSellingProduct = Object.entries(productMap).reduce(
-    (best, [name, unitsSold]) =>
-      unitsSold > best.unitsSold ? { name, unitsSold } : best,
-    { name: null, unitsSold: 0 },
-  );
+  const bestSellingProduct = bestSellingProductResult[0] || {
+    name: null,
+    unitsSold: 0,
+  };
 
   return {
     summary: {
