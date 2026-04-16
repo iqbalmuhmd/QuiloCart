@@ -71,48 +71,51 @@ const PERIOD_FORMAT = {
 
 export const getMerchantAnalyticsService = async (merchantId, period) => {
   const format = PERIOD_FORMAT[period] ?? PERIOD_FORMAT.monthly;
+  const merchantObjectId = new mongoose.Types.ObjectId(merchantId);
 
-  const chartData = await Order.aggregate([
+  const [analytics] = await Order.aggregate([
     { $match: { status: "DELIVERED" } },
     { $unwind: "$items" },
-    { $match: { "items.merchantId": new mongoose.Types.ObjectId(merchantId) } },
+    { $match: { "items.merchantId": merchantObjectId } },
     {
-      $group: {
-        _id: { $dateToString: { format, date: "$createdAt" } },
-        revenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
-        orders: { $addToSet: "$_id" },
-        products: {
-          $push: { name: "$items.name", quantity: "$items.quantity" },
-        },
+      $facet: {
+        chartData: [
+          {
+            $group: {
+              _id: { $dateToString: { format, date: "$createdAt" } },
+              revenue: {
+                $sum: { $multiply: ["$items.price", "$items.quantity"] },
+              },
+              orders: { $addToSet: "$_id" },
+              products: {
+                $push: { name: "$items.name", quantity: "$items.quantity" },
+              },
+            },
+          },
+          { $sort: { _id: 1 } },
+        ],
+        bestSellingProductResult: [
+          {
+            $group: {
+              _id: "$items.name",
+              unitsSold: { $sum: "$items.quantity" },
+            },
+          },
+          { $sort: { unitsSold: -1 } },
+          { $limit: 1 },
+          {
+            $project: {
+              _id: 0,
+              name: "$_id",
+              unitsSold: 1,
+            },
+          },
+        ],
       },
     },
-    { $sort: { _id: 1 } },
   ]);
-
-  const bestSellingProductResult = await Order.aggregate([
-    { $match: { status: "DELIVERED" } },
-    { $unwind: "$items" },
-    {
-      $match: {
-        "items.merchantId": new mongoose.Types.ObjectId(merchantId),
-      },
-    },
-    {
-      $group: {
-        _id: "$items.name",
-        unitsSold: { $sum: "$items.quantity" },
-      },
-    },
-    { $sort: { unitsSold: -1 } },
-    { $limit: 1 },
-    {
-      $project: {
-        _id: 0,
-        name: "$_id",
-        unitsSold: 1,
-      },
-    },
-  ]);
+  const chartData = analytics.chartData;
+  const bestSellingProductResult = analytics.bestSellingProductResult;
 
   const totalRevenue = chartData.reduce((sum, d) => sum + d.revenue, 0);
   const totalOrders = chartData.reduce((sum, d) => sum + d.orders.length, 0);
