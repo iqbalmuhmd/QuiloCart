@@ -1,6 +1,8 @@
 import Category from "@/module/category/category.model";
 import Product from "./product.model";
 import { ApiError } from "@/utils/ApiError";
+import Wishlist from "../wishlist/wishlist.model";
+import Cart from "../cart/cart.model";
 
 export const createProductService = async (data, merchantId) => {
   const { categoryId } = data;
@@ -79,6 +81,11 @@ export const deleteProductService = async (productId, merchantId) => {
   }
 
   product.isActive = false;
+
+  await Promise.all([
+    Wishlist.deleteMany({ productId: product._id }),
+    Cart.updateMany({}, { $pull: { items: { productId: product._id } } }),
+  ]);
 
   await product.save();
 };
