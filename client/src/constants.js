@@ -8,6 +8,7 @@ export const MERCHANT_STATUS = {
   PENDING: "PENDING",
   APPROVED: "APPROVED",
   REJECTED: "REJECTED",
+  BLOCKED: "BLOCKED",
 };
 
 export const ORDER_STATUS = {

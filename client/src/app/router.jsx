@@ -30,12 +30,15 @@ import OrderDetailPage from "@/features/order/pages/OrderDetailPage";
 import MerchantLayout from "@/features/merchant/layout/MerchantLayout";
 import MerchantRegisterPage from "@/features/merchant/pages/MerchantRegisterPage";
 import MerchantPendingPage from "@/features/merchant/pages/MerchantPendingPage";
+import MerchantRejectedPage from "@/features/merchant/pages/MerchantRejectedPage";
+import MerchantBlockedPage from "@/features/merchant/pages/MerchantBlockedPage";
 import MerchantDashboardPage from "@/features/merchant/pages/MerchantDashboardPage";
 import MerchantProductsPage from "@/features/merchant/pages/MerchantProductsPage";
 import CreateProductPage from "@/features/merchant/pages/CreateProductPage";
 import EditProductPage from "@/features/merchant/pages/EditProductPage";
 import MerchantOrdersPage from "@/features/merchant/pages/MerchantOrdersPage";
 import MerchantOrderDetailPage from "@/features/merchant/pages/MerchantOrderDetailPage";
+import MerchantAnalyticsPage from "@/features/merchant/pages/MerchantAnalyticsPage";
 import MerchantWalletPage from "@/features/merchant/pages/MerchantWalletPage";
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
@@ -45,7 +48,6 @@ import AdminLayout from "@/features/admin/layout/AdminLayout";
 import AdminMerchantsPage from "@/features/admin/pages/AdminMerchantsPage";
 import AdminMerchantDetailPage from "@/features/admin/pages/AdminMerchantDetailPage";
 import AdminOrdersPage from "@/features/admin/pages/AdminOrdersPage";
-import MerchantAnalyticsPage from "@/features/merchant/pages/MerchantAnalyticsPage";
 
 const AppRouter = () => {
   return (
@@ -121,6 +123,22 @@ const AppRouter = () => {
           element={
             <MerchantRoute>
               <MerchantPendingPage />
+            </MerchantRoute>
+          }
+        />
+        <Route
+          path="/merchant/rejected"
+          element={
+            <MerchantRoute>
+              <MerchantRejectedPage />
+            </MerchantRoute>
+          }
+        />
+        <Route
+          path="/merchant/blocked"
+          element={
+            <MerchantRoute>
+              <MerchantBlockedPage />
             </MerchantRoute>
           }
         />

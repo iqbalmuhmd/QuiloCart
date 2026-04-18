@@ -3,26 +3,33 @@ import { USER_ROLES, MERCHANT_STATUS } from "@/constants";
 
 const useAuth = () => {
   const auth = useSelector((state) => state.auth);
+  const role = auth.user?.role;
+  const merchantStatus = auth.user?.merchant?.status ?? null;
 
-  const isUser = auth.user?.role === USER_ROLES.USER;
+  const isUser = role === USER_ROLES.USER;
 
-  const isMerchant = auth.user?.role === USER_ROLES.MERCHANT;
+  const isMerchant = role === USER_ROLES.MERCHANT;
 
-  const isAdmin = auth.user?.role === USER_ROLES.ADMIN;
+  const isAdmin = role === USER_ROLES.ADMIN;
 
-  const isApprovedMerchant =
-    isMerchant && auth.user?.merchant?.status === MERCHANT_STATUS.APPROVED;
+  const isApprovedMerchant = merchantStatus === MERCHANT_STATUS.APPROVED;
 
-  const isPendingMerchant =
-    isMerchant && auth.user?.merchant?.status === MERCHANT_STATUS.PENDING;
+  const isPendingMerchant = merchantStatus === MERCHANT_STATUS.PENDING;
+
+  const isRejectedMerchant = merchantStatus === MERCHANT_STATUS.REJECTED;
+
+  const isBlockedMerchant = merchantStatus === MERCHANT_STATUS.BLOCKED;
 
   return {
     ...auth,
     isUser,
     isMerchant,
     isAdmin,
+    merchantStatus,
     isApprovedMerchant,
     isPendingMerchant,
+    isRejectedMerchant,
+    isBlockedMerchant,
   };
 };
 
