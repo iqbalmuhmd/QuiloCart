@@ -7,6 +7,7 @@ const MERCHANT_ROUTES = {
   ORDERS: "/orders/merchant",
   ORDER_BY_ID: (id) => `/orders/merchant/${id}`,
   UPDATE_ORDER_STATUS: (id) => `/orders/${id}/status`,
+  ANALYTICS: "/merchant/analytics",
 };
 
 const merchantRegister = async (data) => {
@@ -60,6 +61,14 @@ const updateOrderStatus = async (orderId, status) => {
   return response.data.data;
 };
 
+const getAnalytics = async (period) => {
+  const response = await apiClient.get(MERCHANT_ROUTES.ANALYTICS, {
+    params: { period },
+  });
+
+  return response.data.data;
+};
+
 const merchantApi = {
   merchantRegister,
   getMerchantProducts,
@@ -69,6 +78,7 @@ const merchantApi = {
   getMerchantOrders,
   getMerchantOrderById,
   updateOrderStatus,
+  getAnalytics,
 };
 
 export default merchantApi;

@@ -48,6 +48,15 @@ const MerchantLayout = () => {
           </NavLink>
 
           <NavLink
+            to="/merchant/analytics"
+            className={({ isActive }) =>
+              `${navItem} ${isActive ? activeNavItem : inactiveNavItem}`
+            }
+          >
+            Analytics
+          </NavLink>
+
+          <NavLink
             to="/merchant/wallet"
             className={({ isActive }) =>
               `${navItem} ${isActive ? activeNavItem : inactiveNavItem}`

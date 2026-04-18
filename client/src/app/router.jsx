@@ -45,6 +45,7 @@ import AdminLayout from "@/features/admin/layout/AdminLayout";
 import AdminMerchantsPage from "@/features/admin/pages/AdminMerchantsPage";
 import AdminMerchantDetailPage from "@/features/admin/pages/AdminMerchantDetailPage";
 import AdminOrdersPage from "@/features/admin/pages/AdminOrdersPage";
+import MerchantAnalyticsPage from "@/features/merchant/pages/MerchantAnalyticsPage";
 
 const AppRouter = () => {
   return (
@@ -138,6 +139,7 @@ const AppRouter = () => {
           <Route path="products/:id/edit" element={<EditProductPage />} />
           <Route path="orders" element={<MerchantOrdersPage />} />
           <Route path="orders/:id" element={<MerchantOrderDetailPage />} />
+          <Route path="analytics" element={<MerchantAnalyticsPage />} />
           <Route path="wallet" element={<MerchantWalletPage />} />
         </Route>
 
