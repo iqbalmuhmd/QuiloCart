@@ -83,9 +83,14 @@ const ShopPage = () => {
 
   const wishlistedIds = new Set(wishlistItems.map((item) => item.id));
 
-  {
-    loading && <p>Loading products...</p>;
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto p-6">
+        <p className="text-muted-foreground">Loading products...</p>
+      </div>
+    );
   }
+
   if (error) {
     return <div className="max-w-6xl mx-auto p-6 text-red-500">{error}</div>;
   }
