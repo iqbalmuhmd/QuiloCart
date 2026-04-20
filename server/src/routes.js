@@ -10,6 +10,7 @@ import wishlistRoutes from "@/module/wishlist/wishlist.routes";
 import cartRoutes from "@/module/cart/cart.routes";
 import orderRoutes from "@/module/order/order.routes";
 import walletRoutes from "@/module/wallet/wallet.routes";
+import uploadRoutes from "@/module/upload/upload.routes";
 
 const router = express.Router();
 
@@ -32,6 +33,9 @@ router.use("/merchant", merchantRoutes);
 
 // @access Private (User + Merchant)
 router.use("/wallet", walletRoutes);
+
+// @access Private (Upload)
+router.use("/upload", uploadRoutes);
 
 // @access  Private (Admin)
 router.use("/admin", adminRoutes);
