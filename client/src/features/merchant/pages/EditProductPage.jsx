@@ -8,6 +8,7 @@ import categoryApi from "@/features/catalog/categoryApi";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ImageUpload from "@/components/merchant/ImageUpload";
 
 const EditProductPage = () => {
   const { id } = useParams();
@@ -149,11 +150,11 @@ const EditProductPage = () => {
               ))}
             </select>
 
-            <Input
-              name="imageUrl"
-              placeholder="Image URL"
+            <ImageUpload
               value={form.imageUrl}
-              onChange={handleChange}
+              onChange={(url) =>
+                setForm((prev) => ({ ...prev, imageUrl: url }))
+              }
             />
 
             {error && <p className="text-sm text-destructive">{error}</p>}

@@ -8,6 +8,7 @@ const MERCHANT_ROUTES = {
   ORDER_BY_ID: (id) => `/orders/merchant/${id}`,
   UPDATE_ORDER_STATUS: (id) => `/orders/${id}/status`,
   ANALYTICS: "/merchant/analytics",
+  UPLOAD: "/upload",
 };
 
 const merchantRegister = async (data) => {
@@ -69,6 +70,17 @@ const getAnalytics = async (period) => {
   return response.data.data;
 };
 
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await apiClient.post(MERCHANT_ROUTES.UPLOAD, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data.data.url;
+};
+
 const merchantApi = {
   merchantRegister,
   getMerchantProducts,
@@ -79,6 +91,7 @@ const merchantApi = {
   getMerchantOrderById,
   updateOrderStatus,
   getAnalytics,
+  uploadImage,
 };
 
 export default merchantApi;
