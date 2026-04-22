@@ -41,21 +41,21 @@ QuiloCart is a multi-role e-commerce platform built with the MERN stack. It supp
 
 ## Running Locally
 
-\```bash
+```bash
 # Backend
 cd server && npm install && npm run dev
 
 # Frontend
 cd client && npm install && npm run dev
-\```
+```
 
 **Required env vars — backend**
-\```
+```
 MONGO_URI, JWT_SECRET, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET,
 CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLIENT_URL
-\```
+```
 
 **Required env vars — frontend**
-\```
+```
 VITE_API_URL
-\```
+```
