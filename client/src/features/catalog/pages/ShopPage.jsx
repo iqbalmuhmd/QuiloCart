@@ -139,7 +139,6 @@ const ShopPage = () => {
         </div>
       )}
 
-      {/* Pagination */}
       <div className="flex justify-center gap-3 pt-6">
         <Button disabled={query.page === 1} onClick={prevPage}>
           Prev

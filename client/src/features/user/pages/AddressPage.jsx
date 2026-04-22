@@ -129,12 +129,10 @@ const AddressPage = () => {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Addresses</h1>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <Input
           name="name"
@@ -200,7 +198,6 @@ const AddressPage = () => {
         </Button>
       </form>
 
-      {/* List */}
       {loading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : addresses.length === 0 ? (

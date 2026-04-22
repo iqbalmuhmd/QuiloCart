@@ -25,13 +25,11 @@ const WalletPage = () => {
         Wallet
       </p>
 
-      {/* Balance card */}
       <div className="border border-gray-200 rounded-xl p-6">
         <p className="text-xs text-muted-foreground">Available balance</p>
         <p className="text-2xl font-semibold mt-1">${balance}</p>
       </div>
 
-      {/* Transactions */}
       <div>
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
           Transaction history

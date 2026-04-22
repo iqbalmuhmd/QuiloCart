@@ -11,7 +11,6 @@ const inactiveNavItem =
 const MerchantLayout = () => {
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
       <aside className="w-64 border-r bg-card">
         <div className="p-6 border-b">
           <h2 className="text-lg font-semibold tracking-tight">
@@ -67,7 +66,6 @@ const MerchantLayout = () => {
         </nav>
       </aside>
 
-      {/* Content */}
       <main className="flex-1 p-8">
         <Outlet />
       </main>

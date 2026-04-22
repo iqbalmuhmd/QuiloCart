@@ -103,15 +103,12 @@ const CheckoutPage = () => {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-[1fr_380px] gap-8">
-        {/* LEFT COLUMN */}
         <div className="space-y-8">
-          {/* Address Section */}
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
               Delivery address
             </p>
 
-            {/* Existing address cards */}
             {addresses.map((addr) => (
               <div
                 key={addr._id}
@@ -139,7 +136,6 @@ const CheckoutPage = () => {
               </div>
             ))}
 
-            {/* Add new address — dashed card or inline form */}
             {!showAddressForm ? (
               <div
                 onClick={() => setShowAddressForm(true)}
@@ -223,13 +219,11 @@ const CheckoutPage = () => {
               </div>
             )}
 
-            {/* Address validation error — only when Place Order clicked with no address */}
             {addressError && (
               <p className="text-sm text-red-600 mt-1">{addressError}</p>
             )}
           </div>
 
-          {/* Order Items */}
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
               Order items
@@ -257,13 +251,11 @@ const CheckoutPage = () => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN — sticky summary */}
         <div className="sticky top-6 h-fit space-y-4">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
             Order summary
           </p>
           <div className="border border-gray-200 rounded-xl p-4 space-y-3">
-            {/* Cart error — inline block */}
             {checkoutError ? (
               <div className="border border-red-200 bg-red-50 text-red-700 rounded-lg p-3 space-y-1">
                 <p className="text-sm font-medium">Cannot place order</p>

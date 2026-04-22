@@ -49,7 +49,6 @@ const AdminMerchantsPage = () => {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Merchants</h1>
 
-      {/* Tab switcher */}
       <div className="flex gap-2 border-b">
         {Object.values(TABS).map((tab) => (
           <button
@@ -66,16 +65,13 @@ const AdminMerchantsPage = () => {
         ))}
       </div>
 
-      {/* States */}
       {loading && <p className="text-muted-foreground">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* Empty state */}
       {!loading && !error && merchants.length === 0 && (
         <p className="text-muted-foreground">No merchants in this category.</p>
       )}
 
-      {/* Merchant list */}
       {!loading && !error && merchants.length > 0 && (
         <div className="space-y-4">
           {merchants.map((merchant) => (

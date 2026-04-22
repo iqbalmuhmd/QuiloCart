@@ -82,7 +82,6 @@ const OrderDetailPage = () => {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      {/* Refund Banner */}
       {order.paymentStatus === PAYMENT_STATUS.REFUNDED && (
         <div className="border border-blue-200 bg-blue-50 text-blue-700 rounded-xl p-4">
           <p className="text-sm font-medium">
@@ -91,7 +90,6 @@ const OrderDetailPage = () => {
         </div>
       )}
 
-      {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           Order details
@@ -104,7 +102,6 @@ const OrderDetailPage = () => {
         </Link>
       </div>
 
-      {/* Status + Date */}
       <div className="border border-gray-200 rounded-xl p-4 flex items-center justify-between">
         <div>
           <p className="text-xs text-muted-foreground">Placed on</p>
@@ -148,7 +145,6 @@ const OrderDetailPage = () => {
         </div>
       </div>
 
-      {/* Order Items */}
       <div>
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
           Items
@@ -175,7 +171,6 @@ const OrderDetailPage = () => {
         </div>
       </div>
 
-      {/* Address Snapshot */}
       <div>
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
           Delivery address
@@ -197,14 +192,12 @@ const OrderDetailPage = () => {
         </div>
       </div>
 
-      {/* Order Summary */}
       <div>
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
           Order summary
         </p>
 
         <div className="border border-gray-200 rounded-xl p-4 space-y-2">
-          {/* Payment method */}
           <div className="flex justify-between text-sm text-muted-foreground">
             <p>Payment method</p>
             <p>
@@ -214,7 +207,6 @@ const OrderDetailPage = () => {
             </p>
           </div>
 
-          {/* Payment ID */}
           {order.paymentStatus === PAYMENT_STATUS.PAID &&
             order.razorpayPaymentId && (
               <div className="flex justify-between text-sm text-muted-foreground">
@@ -223,7 +215,6 @@ const OrderDetailPage = () => {
               </div>
             )}
 
-          {/* Total quantity */}
           <div className="flex justify-between text-sm text-muted-foreground">
             <p>Total quantity</p>
             <p>
@@ -232,7 +223,6 @@ const OrderDetailPage = () => {
             </p>
           </div>
 
-          {/* Total */}
           <div className="flex justify-between text-sm font-medium border-t border-gray-100 pt-2">
             <p>Total</p>
             <p>${order.totalAmount}</p>

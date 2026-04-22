@@ -102,7 +102,6 @@ const ProductDetailPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Product Image */}
       <div className="w-full h-80 bg-gray-100 rounded-lg overflow-hidden">
         <img
           src={product.images?.[0]}
@@ -111,7 +110,6 @@ const ProductDetailPage = () => {
         />
       </div>
 
-      {/* Product Info */}
       <div className="space-y-3">
         <h1 className="text-2xl font-semibold">{product.name}</h1>
 

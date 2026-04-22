@@ -52,7 +52,6 @@ const AdminMerchantDetailPage = () => {
         ← Back to merchants
       </Link>
 
-      {/* Merchant info */}
       <div className="border rounded-xl p-6 space-y-2">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">{merchant.storeName}</h1>
@@ -66,7 +65,6 @@ const AdminMerchantDetailPage = () => {
         </p>
       </div>
 
-      {/* Action buttons */}
       <div className="flex gap-2">
         {merchant.status === "PENDING" && (
           <>
@@ -94,7 +92,6 @@ const AdminMerchantDetailPage = () => {
         )}
       </div>
 
-      {/* Products */}
       <div className="space-y-3">
         <h2 className="text-lg font-medium">Products</h2>
         {merchant.products.length === 0 ? (

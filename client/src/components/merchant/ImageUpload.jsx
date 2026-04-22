@@ -27,7 +27,6 @@ const ImageUpload = ({ value, onChange }) => {
 
   return (
     <div className="space-y-2">
-      {/* Preview — only shows if there's already a URL */}
       {value && (
         <img
           src={value}
@@ -36,7 +35,6 @@ const ImageUpload = ({ value, onChange }) => {
         />
       )}
 
-      {/* Hidden real file input */}
       <input
         ref={inputRef}
         type="file"
@@ -46,7 +44,6 @@ const ImageUpload = ({ value, onChange }) => {
       />
 
       <div className="flex gap-2">
-        {/* Styled button that triggers the hidden input */}
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -56,7 +53,6 @@ const ImageUpload = ({ value, onChange }) => {
           {uploading ? "Uploading..." : value ? "Change Image" : "Upload Image"}
         </button>
 
-        {/* Remove button — only shows if there's an image */}
         {value && (
           <button
             type="button"

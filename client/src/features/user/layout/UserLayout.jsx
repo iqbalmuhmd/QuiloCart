@@ -3,7 +3,6 @@ import { NavLink, Outlet } from "react-router-dom";
 const UserLayout = () => {
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
       <aside className="w-64 border-r bg-muted/40 p-4">
         <h2 className="text-xl font-semibold mb-6">My Account</h2>
 
@@ -75,7 +74,6 @@ const UserLayout = () => {
         </nav>
       </aside>
 
-      {/* Content */}
       <main className="flex-1 p-6">
         <Outlet />
       </main>

@@ -60,7 +60,6 @@ const MerchantAnalyticsPage = () => {
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Analytics</h1>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="border border-gray-200 rounded-xl p-4">
           <p className="text-xs text-muted-foreground">Total Revenue</p>
@@ -94,7 +93,6 @@ const MerchantAnalyticsPage = () => {
         </div>
       </div>
 
-      {/* Period switcher */}
       <div className="flex gap-2">
         {PERIODS.map((p) => (
           <button
@@ -110,8 +108,7 @@ const MerchantAnalyticsPage = () => {
           </button>
         ))}
       </div>
-      
-      {/* Bar chart */}
+
       <div className="border border-gray-200 rounded-xl p-4">
         <ChartContainer
           config={{
