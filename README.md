@@ -39,7 +39,6 @@ QuiloCart is a multi-role e-commerce platform built with the MERN stack. It supp
 
 ---
 
-```
 ## Running Locally
 
 ```bash
@@ -59,5 +58,4 @@ CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLIENT_URL
 **Required env vars — frontend**
 ```
 VITE_API_URL
-```
 ```
